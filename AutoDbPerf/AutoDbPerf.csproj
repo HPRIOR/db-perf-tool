@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>AutoDbPerf</RootNamespace>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Cloud.BigQuery.V2" Version="2.3.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Volume\bqsql\scenario1\usa-names.sql">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <!--        <Content Include="Volume\gcreds\gcreds.json">-->
+        <!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+        <!--        </Content>-->
+        <Content Include="Volume\psql\scenario1\query1.sql" />
+        <Content Include="Volume\psql\scenario1\query2.sql" />
+        <Content Include="Volume\psql\scenario2\query3.sql" />
+        <Content Include="Volume\psql\scenario2\query4.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Volume\output" />
+        <Folder Include="Volume\psql" />
+    </ItemGroup>
+
+</Project>
