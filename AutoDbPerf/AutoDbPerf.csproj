@@ -25,6 +25,9 @@
         <Content Include="Volume\bqsql\scenario1\usa-names.sql">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Volume\clickhouse\scenario1\query1.sql">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <!--        <Content Include="Volume\gcreds\gcreds.json">-->
         <!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
         <!--        </Content>-->
