@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
+using AutoDbPerf.Utils;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.BigQuery.V2;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,7 @@ namespace AutoDbPerf.Implementations.BigQuery
 
         public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
         {
-            var queryName = queryPath.Split("/").Last().Split(".").First();
+            var queryName = queryPath.GetQueryNameFromPath();
             var queryTask = QueryTask(queryPath);
             _logger.LogInformation("Executing : {}-{}", scenario, queryName);
             if (queryTask.Wait(timeout))
@@ -86,18 +87,6 @@ namespace AutoDbPerf.Implementations.BigQuery
             });
         }
 
-        private record BqCommandResult
-        {
-            public BqCommandResult(string problem, float time, string jobId)
-            {
-                Time = time;
-                JobId = jobId;
-                Problem = problem;
-            }
-
-            public string JobId { get; }
-            public float Time { get; }
-            public string Problem { get; }
-        }
+        private record BqCommandResult(string Problem, float Time, string JobId);
     }
 }

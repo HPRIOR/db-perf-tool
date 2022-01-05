@@ -8,5 +8,10 @@ namespace AutoDbPerf.Utils
         {
             return path.Split("/")[^2];
         }
+
+        public static string GetQueryNameFromPath(this string path)
+        {
+            return path.Split("/").Last().Split(".").First();
+        }
     }
 }
