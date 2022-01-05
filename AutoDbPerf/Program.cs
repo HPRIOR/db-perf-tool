@@ -2,6 +2,7 @@
 using System.IO;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Implementations.BigQuery;
+using AutoDbPerf.Implementations.ClickHouse;
 using AutoDbPerf.Implementations.Elastic;
 using AutoDbPerf.Implementations.Postgres;
 using AutoDbPerf.Interfaces;
@@ -70,6 +71,9 @@ namespace AutoDbPerf
                     return;
                 case "bq":
                     services.AddTransient<IQueryExecutor, BigQueryExecutor>();
+                    return;
+                case "clickhouse":
+                    services.AddTransient<IQueryExecutor, ClickhouseQueryExecutor>();
                     return;
                 default:
                     throw new ArgumentException($"Incorrect target set in configuration: {target}");
