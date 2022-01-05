@@ -28,17 +28,7 @@ namespace AutoDbPerf.Implementations
             _directoryScanner = directoryScanner;
         }
 
-        private record ScenarioQuery
-        {
-            public ScenarioQuery(string scenario, string query)
-            {
-                Scenario = scenario;
-                Query = query;
-            }
-
-            public string Scenario { get; }
-            public string Query { get; }
-        }
+        private record ScenarioQuery(string Scenario, string Query);
 
         //TODO refactor me: Directory scanner should just return QueryPaths instead of Scenario, IEnumerable<Query>. 
         // It can then also be responsible for ordering them
