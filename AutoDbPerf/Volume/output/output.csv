@@ -1,5 +1,0 @@
-scenarios,scenario1,scenario2
-query1,Planning: 0.64239997 Execution: 0.0508,N/A
-query2,Planning: 0.3568 Execution: 0.0398,N/A
-query3,N/A,Planning: 0.3644 Execution: 0.0458
-query4,N/A,Planning: 0.34 Execution: 0.0514
