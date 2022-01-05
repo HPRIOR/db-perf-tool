@@ -42,4 +42,8 @@
         <Folder Include="Volume\psql" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Interfaces\IUuidInserter.cs" />
+    </ItemGroup>
+
 </Project>
