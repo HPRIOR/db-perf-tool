@@ -2,23 +2,24 @@ namespace AutoDbPerf.Implementations
 {
     public enum ContextKey
     {
-        PGPASSWORD,
-        PGUSER,
-        PGNAME,
-        PGHOST,
-        PGPORT,
-        QUERYPATH,
-        TARGET,
         AVGPRECISION,
-        TIMEOUT,
-        OUTPUTTYPE,
-        OUTPUTDIR,
+        DOCKER,
+        ELASTICINDEX,
         GOOGLECREDPATH,
         GOOGLEPROJECTID,
-        ELASTICINDEX,
-        IGNOREFIRST,
-        ORDER,
         HOST,
-        INDEXV
+        IGNOREFIRST,
+        INDEXV,
+        ORDER,
+        OUTPUTDIR,
+        OUTPUTTYPE,
+        PGHOST,
+        PGNAME,
+        PGPASSWORD,
+        PGPORT,
+        PGUSER,
+        QUERYPATH,
+        TARGET,
+        TIMEOUT,
     }
 }

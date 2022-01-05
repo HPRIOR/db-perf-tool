@@ -1,3 +1,4 @@
+using System;
 using AutoDbPerf.Interfaces;
 using Microsoft.Extensions.Configuration;
 
@@ -33,7 +34,9 @@ namespace AutoDbPerf.Implementations
                 ContextKey.IGNOREFIRST => _config["IGNOREFIRST"] ?? "",
                 ContextKey.ORDER => _config["ORDER"] ?? "",
                 ContextKey.HOST => _config["HOST"] ?? "localhost",
-                ContextKey.INDEXV => _config["INDEXV"] ?? "data"
+                ContextKey.DOCKER => _config["DOCKER"] ?? "true",
+                ContextKey.INDEXV => _config["INDEXV"] ?? "data",
+                _ => throw new ArgumentOutOfRangeException(nameof(contextKey), contextKey, null)
             };
         }
         
