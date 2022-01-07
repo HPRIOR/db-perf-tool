@@ -1,4 +1,4 @@
-echo "Settup up postgres..."
+echo "Setting up postgres..."
 while true; do
   echo "Waiting for postgres conn"
   if docker exec test-db sh -c "psql -U postgres -lqt | cut -d \| -f 1 | grep -qw dvdrental" >/dev/null 2>&1; then
