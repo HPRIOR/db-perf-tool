@@ -1,1 +1,1 @@
-select * from sales.country;
+select * from test_db.test_table;

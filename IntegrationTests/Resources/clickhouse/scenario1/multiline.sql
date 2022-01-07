@@ -1,4 +1,3 @@
 SELECT *
-FROM sales.country
-WHERE country_code = 'GB'
-                                        
+FROM test_db.test_table
+where x = '1'

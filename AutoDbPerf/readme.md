@@ -145,19 +145,16 @@ The prefix defaults to `data`, but can be modified with `INDEXV` to allow for in
 
 ## Running the integration tests
 
-The postgres benchmark integration tests depend on a database. First create an image of the db: cd into TestDB and
-run `docker build . -t dvd-test`. A script as been provided to run the container and restore the db: cd
-into `IntegrationTests/TestDB/`
-and run `setup-db.sh`. This will setup a postgres container with the required database.
+To run the integration tests, their dependencies will need to be setup. This can be done changing directory to 
+`IntegrationTests` and running:
+
+```bash
+docker-compose up --detach && ./TestDependencies/setup-dependencies.sh
+```
 
 The BigQuery benchmark tests rely on there being a google credentials json file located in `Resources/gcreds/gcreds.json`
 
-The elastic benchmark tests rely on an elastic container, run:
 
-```bash
- docker run -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" --name elastic-test docker.elastic.co/elasticsearch/elasticsearch:7.15.2 
-```
-Then populate it with `IntegrationTests/Resources/TestDb/populate-elastic.sh`
 
 ## Extending the tool
 
