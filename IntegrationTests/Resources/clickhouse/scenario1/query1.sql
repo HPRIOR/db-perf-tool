@@ -1,1 +1,1 @@
-select * from system.query_log;
+select * from sales.country;

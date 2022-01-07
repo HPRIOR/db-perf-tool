@@ -25,7 +25,7 @@ namespace IntegrationTests
             {
                 return contextKey switch
                 {
-                    ContextKey.DOCKER => "false",
+                    ContextKey.ALTCHCLIENT => "true",
                     _ => ""
                 };
             }
@@ -34,21 +34,36 @@ namespace IntegrationTests
         [Test]
         public void WillReturnQueryResult_WithNoErrors()
         {
-            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 500);
+            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 5000);
             Assert.That(sut.Problem, Is.Empty);
         }
         
         [Test]
         public void WillReturnQueryResult_WithTiming()
         {
-            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 500);
+            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 5000);
             Assert.That(sut.ExecutionTime, Is.GreaterThan(0));
         }
         [Test]
         public void WillReturnError_WithBadCommand()
         {
-            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/error.sql", "test", 500);
+            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/error.sql", "test", 5000);
             Assert.That(sut.Problem, Is.Not.Empty);
         }
+        
+        [Test]
+        public void WillTimeout()
+        {
+            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 0);
+            Assert.That(sut.Problem, Does.Contain("Timeout at"));
+        }
+        
+        [Test]
+        public void WillHandleMultiLineQuery()
+        {
+            var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/multiline.sql", "test", 5000);
+            Assert.That(sut.Problem, Is.Empty);
+        }
+        
     }
 }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoDbPerf.Interfaces;
@@ -20,28 +22,48 @@ namespace AutoDbPerf.Implementations.ClickHouse
             _logger = loggerFactory.CreateLogger<ClickhouseQueryExecutor>();
         }
 
+        private Task<ClickHouseCommandResult> ExecuteCommand(string queryPath)
+        {
+            return Task.Run(() =>
+            {
+                var stderr = GetStdError(queryPath);
+                return StdErrorContainsError(stderr.Split())
+                    ? new ClickHouseCommandResult(stderr, 0)
+                    : new ClickHouseCommandResult("", float.Parse(stderr.Replace("\\n", "")));
+            });
+        }
+
         public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
         {
             var queryName = queryPath.GetQueryNameFromPath();
-            var cmdResult = ExecuteCommand(queryPath);
-            if (cmdResult.Problem.Any())
+            var cmdTask = ExecuteCommand(queryPath);
+            if (cmdTask.Wait(timeout))
             {
-                _logger.LogError("Error occured during query Execution: {}", cmdResult.Problem);
-                return new QueryResult(0, 0, queryName, scenario,
-                    cmdResult.Problem);
-            }
+                _logger.LogInformation("Executing : {}-{}", scenario, queryName);
+                var cmdResult = cmdTask.Result;
+                if (cmdResult.Problem.Any())
+                {
+                    _logger.LogError("Error occured during query Execution: {}", cmdResult.Problem);
+                    return new QueryResult(0, 0, queryName, scenario,
+                        cmdResult.Problem);
+                }
 
-            _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResult.Time);
-            return new QueryResult(0, cmdResult.Time, queryName, scenario);
+                _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResult.Time);
+                return new QueryResult(0, cmdTask.Result.Time, queryName, scenario);
+            }
+            _logger.LogWarning("Command timeout");
+            return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
         }
 
         private string GetStdError(string queryPath)
         {
-            var localCommandDiff = _ctx.GetEnv(ContextKey.DOCKER) == "true" ? "-" : " ";
+            var command = _ctx.GetEnv(ContextKey.ALTCHCLIENT) == "false" ? "clickhouse-client" : "clickhouse client";
+            var host = _ctx.GetEnv(ContextKey.HOST).Any() ? _ctx.GetEnv(ContextKey.HOST) : "localhost";
+            var interpolatedCommand = $"-c \"{command} --queries-file '{queryPath}' --time --host={host}\"";
             var psi = new ProcessStartInfo
             {
                 FileName = "/bin/bash",
-                Arguments = $"-c \"clickhouse{localCommandDiff}client --time --queries-file '{queryPath}'\"",
+                Arguments = interpolatedCommand,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -57,13 +79,6 @@ namespace AutoDbPerf.Implementations.ClickHouse
 
         private bool StdErrorContainsError(IEnumerable<string> stderr) => stderr.Count(s => s.Any()) > 1;
 
-        private ClickHouseCommandResult ExecuteCommand(string queryPath)
-        {
-            var stderr = GetStdError(queryPath);
-            return StdErrorContainsError(stderr.Split())
-                ? new ClickHouseCommandResult(stderr, 0)
-                : new ClickHouseCommandResult("", float.Parse(stderr.Replace("\\n", "")));
-        }
 
         private record ClickHouseCommandResult(string Problem, float Time);
     }
