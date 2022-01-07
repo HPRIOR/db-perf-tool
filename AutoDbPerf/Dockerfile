@@ -20,7 +20,9 @@ COPY --from=publish /app/publish .
 RUN apt-get update
 RUN apt-get install -y postgresql-client	
 
-COPY clickhouse .
+RUN apt-get install -y unzip
+COPY clickhouse.zip .
+RUN unzip clickhouse.zip clickhouse
 RUN ./clickhouse install
 ENV HOST="host.docker.internal"
 ENV QUERYPATH="/app/queries"
