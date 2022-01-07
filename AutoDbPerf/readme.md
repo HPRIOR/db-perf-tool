@@ -12,6 +12,12 @@ dotnet run --project AutoDbPerf
 ```
 
 ##Docker
+To build the container a compressed clickhouse binary needs to be available to the docker file (it is not included in the repo).
+Ensure that zip has been installed, then cd into AutoDbPerf and run:
+```bash
+curl -O 'https://builds.clickhouse.com/master/amd64/clickhouse' && chmod a+x clickhouse && zip clickhouse clickhouse
+```
+Then run:
 ```bash
 docker build . -t auto-db-perf
 ```
@@ -28,7 +34,7 @@ docker run \
   -v "/local/path/:/app/Volume" \
   auto-db-perf
 ```
-Note: when running postgres benchmarks you must include explain analyse at the top of each query.
+Note: when running postgres benchmarks you *must* include explain analyse at the top of each query.
 
 ###BigQuery
 ```bash
@@ -53,6 +59,16 @@ docker run \
    auto-db-perf 
 ```
 
+###Clickhouse
+```bash
+docker run  \
+  -e TARGET=clickhouse   \
+  -e QUERYPATH="Volume/query-path" \
+  -e OUTPUTDIR="Volume/output-path" \
+  -v "/Users/harry.prior/Volume:/app/Volume"  \
+  auto-db-perf 
+```
+
 A volume is used so that files containing queries can be accessed 
 and the output can be saved on the host computer. 
 
@@ -60,7 +76,7 @@ and the output can be saved on the host computer.
 Several environment variables need to be set otherwise the apps defaults will be run in appsettings.json.
 #### General
   - TARGET
-    - The type of query to test (e.g. BigQuery (bq), Postgres (postgres), Elastic (elastic))
+    - The type of query to test (e.g. BigQuery (bq), Postgres (postgres), Elastic (elastic), ClickHouse (clickhouse))
   - QUERYPATH
     - The path which contains the queries you want to benchmark (see section below for directory structure details)
   - TIMEOUT
