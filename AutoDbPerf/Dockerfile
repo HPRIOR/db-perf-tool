@@ -17,10 +17,11 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ENV HOST="host.docker.internal"
-ENV QUERYPATH="/app/queries"
 RUN apt-get update
 RUN apt-get install -y postgresql-client	
-RUN apt-get install -y curl
-RUN apt-get install -y clickhouse-client
+
+COPY clickhouse .
+RUN ./clickhouse install
+ENV HOST="host.docker.internal"
+ENV QUERYPATH="/app/queries"
 ENTRYPOINT ["dotnet", "AutoDbPerf.dll"]
