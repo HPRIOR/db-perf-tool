@@ -3,7 +3,7 @@ namespace AutoDbPerf.Implementations
     public enum ContextKey
     {
         AVGPRECISION,
-        DOCKER,
+        ALTCHCLIENT,
         ELASTICINDEX,
         GOOGLECREDPATH,
         GOOGLEPROJECTID,

@@ -34,7 +34,7 @@ namespace AutoDbPerf.Implementations
                 ContextKey.IGNOREFIRST => _config["IGNOREFIRST"] ?? "",
                 ContextKey.ORDER => _config["ORDER"] ?? "",
                 ContextKey.HOST => _config["HOST"] ?? "localhost",
-                ContextKey.DOCKER => _config["DOCKER"] ?? "true",
+                ContextKey.ALTCHCLIENT => _config["ALTCHCLIENT"] ?? "false",
                 ContextKey.INDEXV => _config["INDEXV"] ?? "data",
                 _ => throw new ArgumentOutOfRangeException(nameof(contextKey), contextKey, null)
             };
