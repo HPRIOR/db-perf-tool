@@ -23,5 +23,5 @@ curl -H "Content-Type: application/json" -X POST "http://localhost:9200/test-ind
 curl -H "Content-Type: application/json" -X POST "http://localhost:9200/test-index/test-type" -d "{ \"field6\" : \"value6\"}"
 curl -H "Content-Type: application/json" -X POST "http://localhost:9200/test-index/test-type" -d "{ \"field7\" : \"value7\"}"
 
-clickhouse-client -q "create database test_db ENGINE = Memory"
-clickhouse-client -q "create table test_db.test_table(x String) Engine = Memory AS SELECT 1"
+clickhouse client -q "create database test_db ENGINE = Memory"
+clickhouse client -q "create table test_db.test_table(x String) Engine = Memory AS SELECT 1"
