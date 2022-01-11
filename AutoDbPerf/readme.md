@@ -80,7 +80,7 @@ Several environment variables need to be set otherwise the apps defaults will be
   - QUERYPATH
     - The path which contains the queries you want to benchmark (see section below for directory structure details)
   - TIMEOUT
-    - The maximum time a query should run for in seconds 
+    - The maximum time a query should run for in minutes 
   - AVGPRECISION
     - The number of times each query will run to calculate an average 
   - OUTPUTDIR
@@ -89,6 +89,8 @@ Several environment variables need to be set otherwise the apps defaults will be
     - The type of output produced (only csv supported currently)
   - IGNOREFIRST
     - Ignores the first result of all the queries
+  - ORDER
+    - The order in which queries are executed in each scenario (rr - round robin, seq - sequential)
 #### Postgres
   - PGHOST
   - PGNAME
