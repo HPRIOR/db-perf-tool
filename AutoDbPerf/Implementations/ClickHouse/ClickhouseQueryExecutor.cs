@@ -48,7 +48,7 @@ namespace AutoDbPerf.Implementations.ClickHouse
                         cmdResult.Problem);
                 }
 
-                var cmdResultTime = cmdResult.Time / 1000;
+                var cmdResultTime = cmdResult.Time * 1000;
                 _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResultTime);
                 return new QueryResult(0, cmdResultTime, queryName, scenario);
             }
