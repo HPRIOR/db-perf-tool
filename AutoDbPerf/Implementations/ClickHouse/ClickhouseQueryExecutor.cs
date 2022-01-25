@@ -48,8 +48,9 @@ namespace AutoDbPerf.Implementations.ClickHouse
                         cmdResult.Problem);
                 }
 
-                _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResult.Time/1000);
-                return new QueryResult(0, cmdResult.Time/1000, queryName, scenario);
+                var cmdResultTime = cmdResult.Time / 1000;
+                _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResultTime);
+                return new QueryResult(0, cmdResultTime, queryName, scenario);
             }
 
             _logger.LogWarning("Command timeout");
