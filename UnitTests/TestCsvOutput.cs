@@ -25,10 +25,10 @@ namespace test_auto_db_perf
             var csvOutput = new CsvOutput(new LoggerFactory());
             var result = csvOutput.OutputResults(tableData);
             var expected = "scenarios,scenario1,scenario2\n" +
-                           "query1,Planning: 0.244 Execution: 0.049,N/A\n" +
-                           "query2,Planning: 0.208 Execution: 0.044,N/A\n" +
-                           "query3,N/A,Planning: 0.241 Execution: 0.048\n" +
-                           "query4,N/A,Planning: 0.2 Execution: 0.042\n";
+                           "query1,Planning: 0.244 Execution: 0.049 Total: 0.293,N/A\n" +
+                           "query2,Planning: 0.208 Execution: 0.044 Total: 0.252,N/A\n" +
+                           "query3,N/A,Planning: 0.241 Execution: 0.048 Total: 0.289\n" +
+                           "query4,N/A,Planning: 0.2 Execution: 0.042 Total: 0.242\n";
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -50,8 +50,8 @@ namespace test_auto_db_perf
             var result = csvOutput.OutputResults(tableData);
             var expected = "scenarios,scenario1,scenario2\n" +
                            "query1,Error - see logs,N/A\n" +
-                           "query2,Planning: 0.208 Execution: 0.044,N/A\n" +
-                           "query3,N/A,Planning: 0.241 Execution: 0.048\n" +
+                           "query2,Planning: 0.208 Execution: 0.044 Total: 0.252,N/A\n" +
+                           "query3,N/A,Planning: 0.241 Execution: 0.048 Total: 0.289\n" +
                            "query4,N/A,Error - see logs\n";
             Assert.That(result, Is.EqualTo(expected));
         }

@@ -42,7 +42,7 @@ namespace AutoDbPerf.Implementations
                             if (tr.AvgPlanningTime == 0 && tr.AvgExecutionTime != 0)
                                 return $"{tr.AvgExecutionTime}ms";
                             if (tr.AvgExecutionTime != 0 && tr.AvgPlanningTime != 0)
-                                return $"Planning: {tr.AvgPlanningTime} Execution: {tr.AvgExecutionTime}";
+                                return $"Planning: {tr.AvgPlanningTime} Execution: {tr.AvgExecutionTime} Total: {tr.AvgPlanningTime + tr.AvgExecutionTime}";
                             return "N/A";
                         }
                     ));

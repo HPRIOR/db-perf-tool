@@ -37,9 +37,9 @@ namespace AutoDbPerf.Implementations.ClickHouse
         {
             var queryName = queryPath.GetQueryNameFromPath();
             var cmdTask = ExecuteCommand(queryPath);
+            _logger.LogInformation("Executing : {}-{}", scenario, queryName);
             if (cmdTask.Wait(timeout))
             {
-                _logger.LogInformation("Executing : {}-{}", scenario, queryName);
                 var cmdResult = cmdTask.Result;
                 if (cmdResult.Problem.Any())
                 {
@@ -48,9 +48,10 @@ namespace AutoDbPerf.Implementations.ClickHouse
                         cmdResult.Problem);
                 }
 
-                _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResult.Time);
-                return new QueryResult(0, cmdTask.Result.Time, queryName, scenario);
+                _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResult.Time/1000);
+                return new QueryResult(0, cmdResult.Time/1000, queryName, scenario);
             }
+
             _logger.LogWarning("Command timeout");
             return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
         }
@@ -72,9 +73,18 @@ namespace AutoDbPerf.Implementations.ClickHouse
             using var process = Process.Start(psi);
 
             var readTask = process?.StandardError.ReadToEndAsync();
+            var ignoreStdOutTask = IgnoreStream(process?.StandardOutput);
             var processTask = process?.WaitForExitAsync();
-            Task.WaitAll(readTask!, processTask!);
+            Task.WaitAll(readTask!, processTask!, ignoreStdOutTask);
             return readTask.Result;
+        }
+
+        // The Process API seems to hang on large process outputs unless you consume the stream asynchronously 
+        private async Task IgnoreStream(StreamReader stream)
+        {
+            while (await stream?.ReadLineAsync() != null)
+            {
+            }
         }
 
         private bool StdErrorContainsError(IEnumerable<string> stderr) => stderr.Count(s => s.Any()) > 1;
