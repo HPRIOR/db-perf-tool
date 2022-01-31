@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Implementations.BigQuery;
 using AutoDbPerf.Implementations.ClickHouse;
@@ -14,7 +15,7 @@ namespace IntegrationTests
     {
         public TestClickHouseQueryExecutor()
         {
-            _queryExecutor = new ClickhouseQueryExecutor(new LoggerFactory(), new Context());
+            _queryExecutor = new ClickhouseQueryExecutor(new LoggerFactory(), new Context(), new HttpClient());
         }
 
         private readonly IQueryExecutor _queryExecutor;

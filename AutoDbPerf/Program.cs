@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Implementations.BigQuery;
 using AutoDbPerf.Implementations.ClickHouse;
@@ -74,6 +75,7 @@ namespace AutoDbPerf
                     return;
                 case "clickhouse":
                     services.AddTransient<IQueryExecutor, ClickhouseQueryExecutor>();
+                    services.AddSingleton<HttpClient>();
                     return;
                 default:
                     throw new ArgumentException($"Incorrect target set in configuration: {target}");
