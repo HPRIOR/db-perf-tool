@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualBasic;
+using AutoDbPerf.Records;
 
 namespace AutoDbPerf.Utils
 {
     public static class EnumerableUtils
     {
         private static string FlattenStringBase(this IEnumerable<string> strings, string separator) =>
-             strings.Aggregate((a, b) => a + separator + b);
-        
+            strings.Aggregate((a, b) => a + separator + b);
+
         public static string FlattenToParagraph(this IEnumerable<string> strings)
         {
             return FlattenStringBase(strings, "\n");
         }
-        
+
         public static string FlattenToCommaList(this IEnumerable<string> strings)
         {
             return FlattenStringBase(strings, ",");
@@ -33,7 +33,7 @@ namespace AutoDbPerf.Utils
                 return 0;
             }
         }
-        
+
         public static float GetNumberFromLineWithoutSpaces(this IEnumerable<string> strings, string identifier)
         {
             try
@@ -41,7 +41,6 @@ namespace AutoDbPerf.Utils
                 var line = strings.First(str => str.Contains(identifier));
                 var str = new string(line.Where(char.IsDigit).ToArray());
                 return float.Parse(str);
-
             }
             catch (InvalidOperationException)
             {
@@ -50,5 +49,25 @@ namespace AutoDbPerf.Utils
         }
 
         public static IEnumerable<T> AllButFirst<T>(this IEnumerable<T> ts) => ts.ToArray()[1..];
+
+        public static IEnumerable<QueryResult> AllAfterFirstSuccessful(this IEnumerable<QueryResult> qrs)
+        {
+            var qrsList = qrs.ToList();
+
+            try
+            {
+                var upToFirstResult =
+                    Enumerable
+                        .Range(0, qrsList.Count)
+                        .Zip(qrsList)
+                        .First(tup => tup.Second.Problem.Length == 0)
+                        .First;
+                return qrsList.Skip(upToFirstResult + 1);
+            }
+            catch (InvalidOperationException)
+            {
+                return new List<QueryResult>();
+            }
+        }
     }
 }

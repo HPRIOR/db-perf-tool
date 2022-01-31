@@ -39,10 +39,8 @@ namespace AutoDbPerf.Implementations
                 .Select(group => group.ToList())
                 .ToDictionary(x => (x.First().Scenario, x.First().Query), queryResults =>
                 {
-                    var filteredQueryResults = _ctx.GetEnv(ContextKey.IGNOREFIRST) == "true"
-                        ? queryResults.OrderBy(qr => qr.Time).AllButFirst().ToList()
-                        : queryResults;
-                    
+                    var filteredQueryResults = FilterQueryResults(queryResults).ToList();
+
                     if (ResultsAreAllBad(filteredQueryResults))
                     {
                         var message = GetMessageFromResults(filteredQueryResults);
@@ -53,6 +51,13 @@ namespace AutoDbPerf.Implementations
                     var averageExecutionTime = GetAverage(TimeType.Execution, filteredQueryResults);
                     return new TableResult(averagePlanningTime, averageExecutionTime);
                 });
+        }
+
+        private IEnumerable<QueryResult> FilterQueryResults(IEnumerable<QueryResult> queryResults)
+        {
+            return _ctx.GetEnv(ContextKey.IGNOREFIRST) == "true"
+                ? queryResults.OrderBy(qr => qr.Time).AllAfterFirstSuccessful().ToList()
+                : queryResults;
         }
 
         private float GetAverage(TimeType timeType, IEnumerable<QueryResult> queryResults) => queryResults

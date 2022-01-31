@@ -79,6 +79,14 @@ namespace test_auto_db_perf
             new QueryResult(0.300f, 0.200f, "query4", "scenario2", "error"),
         };
 
+        private IEnumerable<QueryResult> GetQueryResultsWithProblemsInFirstTwoQueries() => new[]
+        {
+            new QueryResult(0.100f, 0.100f, "query1", "scenario1", "probem"),
+            new QueryResult(0.200f, 0.200f, "query1", "scenario1", "problem"),
+            new QueryResult(0.300f, 0.300f, "query1", "scenario1"),
+            new QueryResult(0.700f, 0.300f, "query1", "scenario1"),
+        };
+
         private IEnumerable<QueryResult> GetQueryResultsInOrder() =>
             Enumerable.Range(0, 2)
                 .SelectMany(x => Enumerable.Range(0, 2)
@@ -174,7 +182,7 @@ namespace test_auto_db_perf
         }
 
         [Test]
-        public void RowsWithAllProblems_ProduceMessage()
+        public void RowsWithAllProblems_ProduceMessageInTableResult()
         {
             var queryResults = GetQueryResultsWithExclusiveProblemRows();
             var resultAnalyser = new ResultAnalyser(new Context(false));
@@ -219,6 +227,19 @@ namespace test_auto_db_perf
                 { ("scenario1", "query2"), new TableResult(2f, 2f) },
                 { ("scenario2", "query1"), new TableResult(2f, 2f) },
                 { ("scenario2", "query2"), new TableResult(3f, 3f) },
+            };
+            Assert.That(sut.RowColumnData, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void WillNotIncludeFirstTwoResults_IfUnsuccessful()
+        {
+            var queryResults = GetQueryResultsWithProblemsInFirstTwoQueries();
+            var resultAnalyser = new ResultAnalyser(new Context(true));
+            var sut = resultAnalyser.AnalyseResults(queryResults);
+            var expected = new Dictionary<(string, string), TableResult>()
+            {
+                { ("scenario1", "query1"), new TableResult(0.700f, 0.300f) },
             };
             Assert.That(sut.RowColumnData, Is.EquivalentTo(expected));
         }

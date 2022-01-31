@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using AutoDbPerf.Records;
 using AutoDbPerf.Utils;
+using NSubstitute.Core;
 using NUnit.Framework;
 
 namespace test_auto_db_perf
@@ -7,7 +9,6 @@ namespace test_auto_db_perf
     [TestFixture]
     public class TestEnumerableUtils
     {
-        
         [Test]
         public void FlattenToParagraph_WillWorkOnSingleItemList()
         {
@@ -19,6 +20,7 @@ namespace test_auto_db_perf
             var expected = "Line1";
             Assert.That(input.FlattenToParagraph(), Is.EqualTo(expected));
         }
+
         [Test]
         public void FlattenToParagraph_WillProduceStringsWithLineBreaks()
         {
@@ -82,7 +84,6 @@ namespace test_auto_db_perf
             var input = new List<string>()
             {
                 "{\"took\":2}",
-                
             };
 
             var expected = 2;
@@ -121,6 +122,74 @@ namespace test_auto_db_perf
             };
 
             Assert.That(input.AllButFirst(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void AllAfterFirstSuccessful_WillIgnoreAll_IfOnlyLastIsSuccessful()
+        {
+            var savedQueryResult =
+                new QueryResult(1, 1, "test-query", "test-scenario");
+
+            var input = new List<QueryResult>
+            {
+                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
+                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
+                savedQueryResult
+            };
+            var expected = new List<QueryResult>();
+
+            Assert.That(input.AllAfterFirstSuccessful(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void AllAfterFirstSuccessful_WillIgnoreFirstThreeOutOfFour_IfThirdSuccessful()
+        {
+            var savedQueryResult =
+                new QueryResult(1, 1, "test-query", "test-scenario");
+
+            var input = new List<QueryResult>
+            {
+                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
+                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
+                new(10, 10, "test-query-2", "test-scenario-2"),
+                savedQueryResult
+            };
+            var expected = new List<QueryResult> { savedQueryResult };
+
+            Assert.That(input.AllAfterFirstSuccessful(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void AllAfterFirstSuccessful_WillIgnoreAllTests_IfAllUnsuccessful()
+        {
+            var input = new List<QueryResult>
+            {
+                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
+                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
+                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
+            };
+            var expected = new List<QueryResult>();
+
+            Assert.That(input.AllAfterFirstSuccessful(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void AllAfterFirstSuccessful_WillIgnoreFirstSuccessfulTest_AfterOneFailure()
+        {
+            var expectedOne = new QueryResult(1, 1, "test", "test");
+            var expectedTwo = new QueryResult(1, 1, "test", "test");
+            var input = new List<QueryResult>
+            {
+                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
+                expectedOne,
+                expectedTwo
+            };
+            var expected = new List<QueryResult>
+            {
+                expectedTwo
+            };
+
+            Assert.That(input.AllAfterFirstSuccessful(), Is.EquivalentTo(expected));
         }
     }
 }
