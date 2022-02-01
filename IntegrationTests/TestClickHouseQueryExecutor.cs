@@ -1,10 +1,7 @@
-using System;
 using System.Net.Http;
 using AutoDbPerf.Implementations;
-using AutoDbPerf.Implementations.BigQuery;
 using AutoDbPerf.Implementations.ClickHouse;
 using AutoDbPerf.Interfaces;
-using AutoDbPerf.Records;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
@@ -27,6 +24,7 @@ namespace IntegrationTests
                 return contextKey switch
                 {
                     ContextKey.ALTCHCLIENT => "true",
+                    ContextKey.HOST => "localhost",
                     _ => ""
                 };
             }
