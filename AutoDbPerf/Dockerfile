@@ -20,7 +20,6 @@ COPY --from=publish /app/publish .
 RUN apt-get update
 RUN apt-get install -y postgresql-client	
 
-RUN apt-get install -y unzip
 ENV HOST="host.docker.internal"
 ENV QUERYPATH="/app/queries"
 ENTRYPOINT ["dotnet", "AutoDbPerf.dll"]
