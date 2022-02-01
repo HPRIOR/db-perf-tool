@@ -59,13 +59,13 @@ namespace AutoDbPerf
             switch (target)
             {
                 case "postgres":
-                    services.AddTransient<IQueryExecutor, QueryExecutor>();
+                    services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, PostgresQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
                     return;
                 case "elastic":
-                    services.AddTransient<IQueryExecutor, QueryExecutor>();
+                    services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();

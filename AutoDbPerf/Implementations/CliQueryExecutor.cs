@@ -6,18 +6,18 @@ using Microsoft.Extensions.Logging;
 
 namespace AutoDbPerf.Implementations
 {
-    public class QueryExecutor : IQueryExecutor
+    public class CliQueryExecutor : IQueryExecutor
     {
         private readonly ICommandExecutor _commandExecutor;
-        private readonly ILogger<QueryExecutor> _logger;
+        private readonly ILogger<CliQueryExecutor> _logger;
         private readonly IQueryInterpreter _queryInterpreter;
 
-        public QueryExecutor(ILoggerFactory loggerFactory, ICommandExecutor commandExecutor,
+        public CliQueryExecutor(ILoggerFactory loggerFactory, ICommandExecutor commandExecutor,
             IQueryInterpreter queryInterpreter)
         {
             _commandExecutor = commandExecutor;
             _queryInterpreter = queryInterpreter;
-            _logger = loggerFactory.CreateLogger<QueryExecutor>();
+            _logger = loggerFactory.CreateLogger<CliQueryExecutor>();
         }
 
         public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)

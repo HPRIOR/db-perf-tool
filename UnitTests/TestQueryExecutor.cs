@@ -60,7 +60,7 @@ namespace test_auto_db_perf
             queryInterpreter.InterpretCommandResult(executionNoTimeResult)
                 .Returns(new InterpretedCommand(false));
 
-            _queryExecutor = new QueryExecutor(new LoggerFactory(), commandExecutor, queryInterpreter);
+            _queryExecutor = new CliQueryExecutor(new LoggerFactory(), commandExecutor, queryInterpreter);
         }
 
         private IQueryExecutor? _queryExecutor;

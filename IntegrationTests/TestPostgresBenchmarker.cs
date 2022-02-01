@@ -18,7 +18,7 @@ namespace IntegrationTests
                 services.AddTransient<IQueryManager, QueryManager>();
                 services.AddTransient<IResultAnalyser, ResultAnalyser>();
                 services.AddTransient<ITableOutput, CsvOutput>();
-                services.AddTransient<IQueryExecutor, QueryExecutor>();
+                services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                 services.AddTransient<IDirectoryScanner, DirectoryScanner>();
                 services.AddTransient<ICommandExecutor, CommandExecutor>();
                 services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
