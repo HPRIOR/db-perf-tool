@@ -37,38 +37,69 @@ namespace AutoDbPerf.Implementations
             return results
                 .GroupBy(qr => new { qr.Scenario, qr.Query })
                 .Select(group => group.ToList())
-                .ToDictionary(x => (x.First().Scenario, x.First().Query), queryResults =>
-                {
-                    var filteredQueryResults = FilterQueryResults(queryResults).ToList();
-
-                    if (ResultsAreAllBad(filteredQueryResults))
+                .ToDictionary(
+                    x => (x.First().Scenario, x.First().Query),
+                    queryResults =>
                     {
-                        var message = GetErrorMessageFromResults(filteredQueryResults);
-                        return new TableResult(0, 0, message);
-                    }
+                        var filteredQueryResults = ApplyIgnoreFirstRule(queryResults).ToList();
 
-                    var averagePlanningTime = GetAverage(TimeType.Planning, filteredQueryResults);
-                    var averageExecutionTime = GetAverage(TimeType.Execution, filteredQueryResults);
-                    return new TableResult(averagePlanningTime, averageExecutionTime);
-                });
+                        if (ResultsAreAllBad(filteredQueryResults))
+                        {
+                            var message = GetErrorMessageFromResults(filteredQueryResults);
+                            return new TableResult(0, 0, 0, 0, message);
+                        }
+
+                        var data = filteredQueryResults.Where(ResultHasData).ToList(); // will return min of 1 result
+
+                        // one or more results must be available from here
+                        var averagePlanningTime = GetAverage(TimeType.Planning, data);
+                        var averageExecutionTime = GetAverage(TimeType.Execution, data);
+
+                        if (data.Count == 1) // std deviation not possible - default to 0
+                            return new TableResult(averagePlanningTime, averageExecutionTime);
+
+                        var planningStdDev = GetStdDev(TimeType.Planning, filteredQueryResults);
+                        var executionStdDev = GetStdDev(TimeType.Execution, filteredQueryResults);
+
+                        return new TableResult(
+                            averagePlanningTime,
+                            averageExecutionTime,
+                            planningStdDev,
+                            executionStdDev);
+                    });
         }
 
-        private IEnumerable<QueryResult> FilterQueryResults(IEnumerable<QueryResult> queryResults)
+
+        private IEnumerable<QueryResult> ApplyIgnoreFirstRule(IEnumerable<QueryResult> queryResults)
         {
             return _ctx.GetEnv(ContextKey.IGNOREFIRST) == "true"
-                ? queryResults.OrderBy(qr => qr.Time).AllAfterFirstSuccessful().ToList()
+                ? queryResults
+                    .OrderBy(qr => qr.Time)
+                    .AllAfterFirstSuccessful()
+                    .ToList()
                 : queryResults;
         }
 
         private float GetAverage(TimeType timeType, IEnumerable<QueryResult> queryResults) => queryResults
-            .Where(ResultHasData).Average(
-                x => timeType switch
-                {
-                    TimeType.Execution => x.ExecutionTime,
-                    TimeType.Planning => x.PlanningTime,
-                    _ => throw new ArgumentOutOfRangeException(nameof(timeType), timeType, null)
-                }
-            );
+            .Average(qr => OfTimeType(timeType, qr));
+
+        private float GetStdDev(TimeType timeType, IEnumerable<QueryResult> queryResults)
+        {
+            var data = queryResults.Where(ResultHasData).Select(qr => OfTimeType(timeType, qr))
+                .ToList(); // will be greater than 
+            var avg = data.Average();
+            return (float)Math.Round(
+                Math.Sqrt(
+                    data.Select(x => Math.Pow(x - avg, 2)).Average()
+                ), 2);
+        }
+
+        private float OfTimeType(TimeType timeType, QueryResult qr) => timeType switch
+        {
+            TimeType.Execution => qr.ExecutionTime,
+            TimeType.Planning => qr.PlanningTime,
+            _ => throw new ArgumentOutOfRangeException(nameof(timeType), timeType, null)
+        };
 
         private bool ResultsAreAllBad(IEnumerable<QueryResult> results)
         {

@@ -87,6 +87,14 @@ namespace test_auto_db_perf
             new QueryResult(0.700f, 0.300f, "query1", "scenario1"),
         };
 
+        private IEnumerable<QueryResult> GetQueryResultsAllDuplicates() => new[]
+        {
+            new QueryResult(0.100f, 0.100f, "query1", "scenario1"),
+            new QueryResult(0.200f, 0.200f, "query1", "scenario1"),
+            new QueryResult(0.300f, 0.300f, "query1", "scenario1"),
+            new QueryResult(0.700f, 0.700f, "query1", "scenario1"),
+        };
+
         private IEnumerable<QueryResult> GetQueryResultsInOrder() =>
             Enumerable.Range(0, 2)
                 .SelectMany(x => Enumerable.Range(0, 2)
@@ -156,10 +164,10 @@ namespace test_auto_db_perf
             var sut = resultAnalyser.AnalyseResults(queryResults);
             var expected = new Dictionary<(string, string), TableResult>()
             {
-                { ("scenario1", "query1"), new TableResult(0.150f, 0.150f) },
+                { ("scenario1", "query1"), new TableResult(0.150f, 0.150f, 0.05f, 0.05f) },
                 { ("scenario1", "query2"), new TableResult(0.208f, 0.044f) },
                 { ("scenario2", "query3"), new TableResult(0.241f, 0.048f) },
-                { ("scenario2", "query4"), new TableResult(0.250f, 0.250f) },
+                { ("scenario2", "query4"), new TableResult(0.250f, 0.250f, 0.05f, 0.05f) },
             };
             Assert.That(sut.RowColumnData, Is.EquivalentTo(expected));
         }
@@ -189,10 +197,10 @@ namespace test_auto_db_perf
             var sut = resultAnalyser.AnalyseResults(queryResults);
             var expected = new Dictionary<(string, string), TableResult>()
             {
-                { ("scenario1", "query1"), new TableResult(0, 0, "error") },
+                { ("scenario1", "query1"), new TableResult(0, 0, 0, 0, "error") },
                 { ("scenario1", "query2"), new TableResult(0.208f, 0.044f) },
                 { ("scenario2", "query3"), new TableResult(0.241f, 0.048f) },
-                { ("scenario2", "query4"), new TableResult(0, 0, "timeout-10") },
+                { ("scenario2", "query4"), new TableResult(0, 0, 0, 0, "timeout-10") },
             };
             Assert.That(sut.RowColumnData, Is.EquivalentTo(expected));
         }
@@ -206,10 +214,10 @@ namespace test_auto_db_perf
             var sut = resultAnalyser.AnalyseResults(queryResults);
             var expected = new Dictionary<(string, string), TableResult>()
             {
-                { ("scenario1", "query1"), new TableResult(0, 0, "error") },
+                { ("scenario1", "query1"), new TableResult(0, 0, 0, 0, "error") },
                 { ("scenario1", "query2"), new TableResult(0.208f, 0.044f) },
                 { ("scenario2", "query3"), new TableResult(0.241f, 0.048f) },
-                { ("scenario2", "query4"), new TableResult(0, 0, "timeout-10,error") },
+                { ("scenario2", "query4"), new TableResult(0, 0, 0, 0, "timeout-10,error") },
             };
             Assert.That(sut.RowColumnData, Is.EquivalentTo(expected));
         }
@@ -242,6 +250,30 @@ namespace test_auto_db_perf
                 { ("scenario1", "query1"), new TableResult(0.700f, 0.300f) },
             };
             Assert.That(sut.RowColumnData, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void WillGetCorrectStdDeviation_IgnoreFirstFalse()
+        {
+            var queryResults = GetQueryResultsAllDuplicates();
+            var resultAnalyser = new ResultAnalyser(new Context(false));
+            var sut = resultAnalyser.AnalyseResults(queryResults);
+            var expectedExcDev = 0.23f;
+            var expectedPlanDev = 0.23f;
+            Assert.That(sut.RowColumnData[("scenario1", "query1")].ExecutionStdDev, Is.EqualTo(expectedExcDev));
+            Assert.That(sut.RowColumnData[("scenario1", "query1")].ExecutionStdDev, Is.EqualTo(expectedPlanDev));
+        }
+
+        [Test]
+        public void WillGetCorrectStdDeviation_IgnoreFirstTrue()
+        {
+            var queryResults = GetQueryResultsAllDuplicates();
+            var resultAnalyser = new ResultAnalyser(new Context(true));
+            var sut = resultAnalyser.AnalyseResults(queryResults);
+            var expectedExcDev = 0.22f;
+            var expectedPlanDev = 0.22f;
+            Assert.That(sut.RowColumnData[("scenario1", "query1")].ExecutionStdDev, Is.EqualTo(expectedExcDev));
+            Assert.That(sut.RowColumnData[("scenario1", "query1")].ExecutionStdDev, Is.EqualTo(expectedPlanDev));
         }
     }
 }
