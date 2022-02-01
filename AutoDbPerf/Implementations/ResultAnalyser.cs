@@ -43,7 +43,7 @@ namespace AutoDbPerf.Implementations
 
                     if (ResultsAreAllBad(filteredQueryResults))
                     {
-                        var message = GetMessageFromResults(filteredQueryResults);
+                        var message = GetErrorMessageFromResults(filteredQueryResults);
                         return new TableResult(0, 0, message);
                     }
 
@@ -80,7 +80,7 @@ namespace AutoDbPerf.Implementations
             return result.Problem.Length == 0;
         }
 
-        private string GetMessageFromResults(IEnumerable<QueryResult> results)
+        private string GetErrorMessageFromResults(IEnumerable<QueryResult> results)
         {
             return results
                 .Select(r => r.Problem)
