@@ -40,9 +40,10 @@ namespace AutoDbPerf.Implementations
                             if (tr.Message.Length > 0)
                                 return "Error - see logs";
                             if (tr.AvgPlanningTime == 0 && tr.AvgExecutionTime != 0)
-                                return $"{tr.AvgExecutionTime}ms";
+                                return $"Execution: {tr.AvgExecutionTime}ms SD: {tr.ExecutionStdDev}";
                             if (tr.AvgExecutionTime != 0 && tr.AvgPlanningTime != 0)
-                                return $"Planning: {tr.AvgPlanningTime} Execution: {tr.AvgExecutionTime} Total: {tr.AvgPlanningTime + tr.AvgExecutionTime}";
+                                return
+                                    $"Planning: {tr.AvgPlanningTime} SD: {tr.PlanningStdDev} Execution: {tr.AvgExecutionTime} SD: {tr.ExecutionStdDev} Total: {tr.AvgPlanningTime + tr.AvgExecutionTime}";
                             return "N/A";
                         }
                     ));
