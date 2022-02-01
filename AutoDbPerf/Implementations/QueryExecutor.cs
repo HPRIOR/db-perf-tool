@@ -22,8 +22,8 @@ namespace AutoDbPerf.Implementations
 
         public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
         {
-            var query = queryPath.Split("/").Last().Split('.').First();
-            _logger.LogInformation("Executing : {}-{}", scenario, query);
+            var queryName = queryPath.GetQueryNameFromPath();
+            _logger.LogInformation("Executing : {}-{}", scenario, queryName);
             
             var task = _commandExecutor.ExecuteCommand(queryPath, _queryInterpreter.InitialScanPredicate());
             if (task.Wait(timeout))
@@ -33,18 +33,18 @@ namespace AutoDbPerf.Implementations
                 if (interpretedResult.IsError)
                 {
                     _logger.LogError("Process errored: {}", interpretedResult.ErrorMessage);
-                    return new QueryResult(0, 0, query, scenario, "Error occured - see logs");
+                    return new QueryResult(0, 0, queryName, scenario, "Error occured - see logs");
                 }
 
-                _logger.LogInformation("{}-{} - Execution time: {}, Planning time: {}", scenario, query,
+                _logger.LogInformation("{}-{} - Execution time: {}, Planning time: {}", scenario, queryName,
                     interpretedResult.ExecutionTime,
                     interpretedResult.PlanningTime);
-                return new QueryResult(interpretedResult.PlanningTime, interpretedResult.ExecutionTime, query,
+                return new QueryResult(interpretedResult.PlanningTime, interpretedResult.ExecutionTime, queryName,
                     scenario);
             }
 
             _logger.LogWarning("Command timout");
-            return new QueryResult(0, 0, query, scenario, $"Timeout at {timeout}ms");
+            return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
         }
     }
 }
