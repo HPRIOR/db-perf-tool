@@ -22,73 +22,12 @@
         <Content Include="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="Volume\bqsql\scenario1\usa-names.sql">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
         <Content Include="Volume\clickhouse\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <!--        <Content Include="Volume\gcreds\gcreds.json">-->
         <!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
         <!--        </Content>-->
-        <Content Include="Volume\psql\scenario1\query1.sql" />
-        <Content Include="Volume\psql\scenario1\query2.sql" />
-        <Content Include="Volume\psql\scenario2\query3.sql" />
-        <Content Include="Volume\psql\scenario2\query4.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\brand-leaderboard.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\overview.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\product-leaderboard.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\product-overview.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\segmentation-brands.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\segmentation-channels.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\segmentation-features.sql" />
-        <Content Include="Volume\scratch\30-worst-case-large-cells\segmentation-price_band.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\brand-leaderboard.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\overview.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\product-leaderboard.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\product-overview.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\segmentation-brands.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\segmentation-channels.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\segmentation-features.sql" />
-        <Content Include="Volume\scratch\5-worst-case-large-cells\segmentation-price_band.sql" />
-        <Content Include="Volume\scratch\mda-france\brand-leaderboard.sql" />
-        <Content Include="Volume\scratch\mda-france\overview.sql" />
-        <Content Include="Volume\scratch\mda-france\product-leaderboard.sql" />
-        <Content Include="Volume\scratch\mda-france\product-overview.sql" />
-        <Content Include="Volume\scratch\mda-france\segmentation-brands.sql" />
-        <Content Include="Volume\scratch\mda-france\segmentation-channels.sql" />
-        <Content Include="Volume\scratch\mda-france\segmentation-features.sql" />
-        <Content Include="Volume\scratch\mda-france\segmentation-price_band.sql" />
-        <Content Include="Volume\scratch\ptv-europe\brand-leaderboard.sql" />
-        <Content Include="Volume\scratch\ptv-europe\overview.sql" />
-        <Content Include="Volume\scratch\ptv-europe\product-leaderboard.sql" />
-        <Content Include="Volume\scratch\ptv-europe\product-overview.sql" />
-        <Content Include="Volume\scratch\ptv-europe\segmentation-brands.sql" />
-        <Content Include="Volume\scratch\ptv-europe\segmentation-channels.sql" />
-        <Content Include="Volume\scratch\ptv-europe\segmentation-features.sql" />
-        <Content Include="Volume\scratch\ptv-europe\segmentation-price_band.sql" />
-        <Content Include="Volume\scratch\sda-germany\brand-leaderboard.sql" />
-        <Content Include="Volume\scratch\sda-germany\overview.sql" />
-        <Content Include="Volume\scratch\sda-germany\product-leaderboard.sql" />
-        <Content Include="Volume\scratch\sda-germany\product-overview.sql" />
-        <Content Include="Volume\scratch\sda-germany\segmentation-brands.sql" />
-        <Content Include="Volume\scratch\sda-germany\segmentation-channels.sql" />
-        <Content Include="Volume\scratch\sda-germany\segmentation-features.sql" />
-        <Content Include="Volume\scratch\sda-germany\segmentation-price_band.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\brand-leaderboard.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\overview.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\product-leaderboard.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\product-overview.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\segmentation-brands.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\segmentation-channels.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\segmentation-features.sql" />
-        <Content Include="Volume\scratch\worst-case-large-cell\segmentation-price_band.sql" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Volume\output" />
-        <Folder Include="Volume\psql" />
-        <Folder Include="Volume\scratch" />
     </ItemGroup>
 
     <ItemGroup>
