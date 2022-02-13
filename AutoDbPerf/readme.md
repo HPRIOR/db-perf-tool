@@ -130,20 +130,6 @@ accomodate, but will leave blank "N/A" cells for empty parts of the table.
 The intention is that `scenario1-query1` would be similar to `scenario2-query1` such that variations in SQL (different
 scenarios) can be tested and compared.
 
-## Notes on elastic indices
-To make the testing various scenarios a bit easier, if you name your scenario directories one of the following:
-```
-30-worst-case-large-cells
-5-worst-case-large-cells
-baseline
-ptv-europe
-sda-germany
-worst-case-large-cell
-mda-france
-```
-the tool will automatically generate the indices for that supercell. e.g. `data_de_mediatablets` for `baseline`.
-The prefix defaults to `data`, but can be modified with `INDEXV` to allow for index versioning.
-**Indices will be overridden by `ELASTICINDEX`.**
 
 ## Running the integration tests
 
