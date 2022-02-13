@@ -3,6 +3,7 @@
 This tool will execute a series of SQL files and produce a table with their planning and/or execution times.
 
 ##Using the tool
+
 The tool can be run natively with the .NET runtime/sdk or with a container. In either case
 several environment variables need to be set - see below.
 
