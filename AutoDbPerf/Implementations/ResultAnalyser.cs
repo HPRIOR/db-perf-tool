@@ -7,6 +7,8 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations
 {
+    // TODO - create a results analyser for each IQueryResult interface (bq, ch, pg)
+    // Returns specific table data e.g. BqTableData
     public class ResultAnalyser : IResultAnalyser
     {
         private readonly IContext _ctx;
@@ -54,20 +56,33 @@ namespace AutoDbPerf.Implementations
                         // one or more results must be available from here
                         var averagePlanningTime = GetAverage(TimeType.Planning, data);
                         var averageExecutionTime = GetAverage(TimeType.Execution, data);
+                        var averageBytesProcessed = GetAverageBytesProcessed(data);
 
                         if (data.Count == 1) // std deviation not possible - default to 0
-                            return new TableResult(averagePlanningTime, averageExecutionTime);
+                        {   
+                            var biEngine = ParseBiEngine(data[0].BiEngine);
+                            return new TableResult(averagePlanningTime, averageExecutionTime, 0, 0, "",
+                                averageBytesProcessed, biEngine);
+                        }
+
 
                         var planningStdDev = GetStdDev(TimeType.Planning, filteredQueryResults);
                         var executionStdDev = GetStdDev(TimeType.Execution, filteredQueryResults);
+                        var multiBiEngine = ParseMultipleBiEngineResults(data.Select(x => x.BiEngine));
 
                         return new TableResult(
                             averagePlanningTime,
                             averageExecutionTime,
                             planningStdDev,
-                            executionStdDev);
+                            executionStdDev,
+                            "",
+                            averageBytesProcessed,
+                            multiBiEngine
+                        );
                     });
         }
+
+        private float GetAverageBytesProcessed(List<QueryResult> data) => data.Average(d => d.BytesProcessed);
 
 
         private IEnumerable<QueryResult> ApplyIgnoreFirstRule(IEnumerable<QueryResult> queryResults)
@@ -128,6 +143,26 @@ namespace AutoDbPerf.Implementations
         private IEnumerable<string> GetRows(IEnumerable<QueryResult> result)
         {
             return result.Select(r => r.Query).ToHashSet();
+        }
+
+        private string ParseMultipleBiEngineResults(IEnumerable<string> biEngineResults)
+        {
+            var dataList = biEngineResults.ToList(); // avoid multiple enumeration 
+            var allBiEngineAreSame = dataList.Distinct().Count() == 1;
+            return allBiEngineAreSame 
+                ? ParseBiEngine(dataList.First()) 
+                : dataList.Aggregate((a, b) => $"{a}, {b}");
+        }
+
+        private string ParseBiEngine(string biEngineResult)
+        {
+            return biEngineResult switch
+            {
+                "NONE" => "N",
+                "FULL" => "F",
+                "PARTIAL" => "P",
+                _ => "N"
+            };
         }
     }
 }

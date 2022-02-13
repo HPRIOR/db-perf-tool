@@ -38,9 +38,12 @@ namespace AutoDbPerf.Implementations.BigQuery
                     return new QueryResult(0, 0, queryName, scenario, cmdResult.Problem);
                 }
 
-                _logger.LogInformation("{}-{} - Execution time: {}. JobId: {}", scenario, queryName, cmdResult.Time,
-                    cmdResult.JobId);
-                return new QueryResult(0, cmdResult.Time, queryName, scenario);
+                _logger.LogInformation(
+                    "{}-{} - Execution time: {}ms. Processed: {}gb. JobId: {}, BIEngineMode: {}, BytesBilled: {}",
+                    scenario,
+                    queryName, cmdResult.Time, cmdResult.ByteProcessed,
+                    cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.bytesBilled);
+                return new QueryResult(0, cmdResult.Time, queryName, scenario, "", cmdResult.ByteProcessed, cmdResult.BiEngineMode);
             }
 
             _logger.LogWarning("Command timout");
@@ -64,29 +67,35 @@ namespace AutoDbPerf.Implementations.BigQuery
                     var queryJob = client.CreateQueryJob(query, null, queryOptions);
 
                     var job = queryJob.PollUntilCompleted();
+
                     var jobId = queryJob.Reference.JobId;
 
                     var errors = queryJob.Status.Errors;
-                    if (errors != null) return new BqCommandResult(errors.Last().Message, 0, jobId);
+                    if (errors != null) return new BqCommandResult(errors.Last().Message, 0, jobId, 0, "", 0);
 
-                    var queryTime = job.Statistics.EndTime - job.Statistics.StartTime;
-                    return new BqCommandResult("", (float)queryTime, jobId);
+                    var bytesProcessed =  job.Statistics?.Query?.TotalBytesProcessed / 1073741824d  ?? 0;
+                    var biEngineMode = job.Statistics?.Query?.BiEngineStatistics?.BiEngineMode ?? "NONE";
+                    var bytesBilled = job.Statistics?.Query?.TotalBytesBilled ?? 0;
+                    var queryTime = (job.Statistics?.EndTime - job.Statistics?.StartTime) ?? 0;
+                    return new BqCommandResult("", queryTime, jobId, (float)bytesProcessed, biEngineMode,
+                        bytesBilled);
                 }
                 catch (AggregateException ae)
                 {
-                    return new BqCommandResult(ae.ToString(), 0, "N/A");
+                    return new BqCommandResult(ae.ToString(), 0, "N/A", 0, "", 0);
                 }
                 catch (HttpRequestException httpe)
                 {
-                    return new BqCommandResult(httpe.ToString(), 0, "N/A");
+                    return new BqCommandResult(httpe.ToString(), 0, "N/A", 0, "", 0);
                 }
                 catch (IOException ioe)
                 {
-                    return new BqCommandResult(ioe.ToString(), 0, "N/A");
+                    return new BqCommandResult(ioe.ToString(), 0, "N/A", 0, "", 0);
                 }
             });
         }
 
-        private record BqCommandResult(string Problem, float Time, string JobId);
+        private record BqCommandResult(string Problem, float Time, string JobId, float ByteProcessed,
+            string BiEngineMode, long bytesBilled);
     }
 }

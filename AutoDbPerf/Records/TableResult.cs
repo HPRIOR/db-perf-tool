@@ -8,6 +8,8 @@ namespace AutoDbPerf.Records
         float AvgExecutionTime,
         float PlanningStdDev = 0,
         float ExecutionStdDev = 0,
-        string Message = ""
+        string Message = "",
+        float GbProcessed = 0,
+        string BiEngine = ""
         );
 }
