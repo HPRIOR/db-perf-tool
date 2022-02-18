@@ -9,11 +9,14 @@ namespace AutoDbPerf.Implementations
 {
     public class CsvOutput : ITableOutput
     {
+        private readonly ITableDataInterpreter _tableDataInterpreter;
+
         // TODO - create db specific implementation to handle db specific TableData
         private readonly ILogger<CsvOutput> _logger;
 
-        public CsvOutput(ILoggerFactory loggerFactory)
+        public CsvOutput(ILoggerFactory loggerFactory, ITableDataInterpreter tableDataInterpreter)
         {
+            _tableDataInterpreter = tableDataInterpreter;
             _logger = loggerFactory.CreateLogger<CsvOutput>();
         }
 
@@ -29,10 +32,6 @@ namespace AutoDbPerf.Implementations
             return sb.ToString();
         }
 
-        /*
-         * One maps have been inserted into TableData, a tabledata interpreter will need to be created
-         * Map<string,string> -> string
-         */
         private IEnumerable<IEnumerable<string>> getDataFrom(TableData tableData)
         {
             return tableData.Rows
@@ -40,23 +39,22 @@ namespace AutoDbPerf.Implementations
                         tableData.RowColumnData.ContainsKey((column, row))
                             ? tableData.RowColumnData[(column, row)]
                             : new TableResult2(null, true))
-                    .Select(tr =>
-                        {
-                            // refactor this is getting messy
-                            if (tr.Message.Length > 0)
-                                return "Error - see logs";
-                            if (tr.AvgPlanningTime == 0 && tr.AvgExecutionTime != 0)
-                            {
-                                var avgBytesProcessed = tr.GbProcessed > 0 ? $" Gb: {tr.GbProcessed}" : "";
-                                return $"Execution: {tr.AvgExecutionTime}ms SD: {tr.ExecutionStdDev}{avgBytesProcessed} ({tr.BiEngine})";
-                            }
-
-                            if (tr.AvgExecutionTime != 0 && tr.AvgPlanningTime != 0)
-                                return
-                                    $"Planning: {tr.AvgPlanningTime} SD: {tr.PlanningStdDev} Execution: {tr.AvgExecutionTime} SD: {tr.ExecutionStdDev} Total: {tr.AvgPlanningTime + tr.AvgExecutionTime}";
-                            return "N/A";
-                        }
-                    ));
+                    .Select(tr => _tableDataInterpreter.Interpret(tr)));
+            
         }
     }
 }
+
+                            // refactor this is getting messy
+                            // if (tr.Message.Length > 0)
+                            //     return "Error - see logs";
+                            // if (tr.AvgPlanningTime == 0 && tr.AvgExecutionTime != 0)
+                            // {
+                            //     var avgBytesProcessed = tr.GbProcessed > 0 ? $" Gb: {tr.GbProcessed}" : "";
+                            //     return $"Execution: {tr.AvgExecutionTime}ms SD: {tr.ExecutionStdDev}{avgBytesProcessed} ({tr.BiEngine})";
+                            // }
+                            //
+                            // if (tr.AvgExecutionTime != 0 && tr.AvgPlanningTime != 0)
+                            //     return
+                            //         $"Planning: {tr.AvgPlanningTime} SD: {tr.PlanningStdDev} Execution: {tr.AvgExecutionTime} SD: {tr.ExecutionStdDev} Total: {tr.AvgPlanningTime + tr.AvgExecutionTime}";
+                            // return "N/A";

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -23,7 +24,7 @@ namespace AutoDbPerf.Implementations.BigQuery
             _ctx = ctx;
         }
 
-        public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
+        public QueryResult2 ExecuteQuery(string queryPath, string scenario, int timeout)
         {
             var queryName = queryPath.GetQueryNameFromPath();
             var queryTask = QueryTask(queryPath);
@@ -35,19 +36,25 @@ namespace AutoDbPerf.Implementations.BigQuery
                 {
                     _logger.LogError("Error occured during query execution: {}. JobId: {}", cmdResult.Problem,
                         cmdResult.JobId);
-                    return new QueryResult(0, 0, queryName, scenario, cmdResult.Problem);
+                    // return new QueryResult(0, 0, queryName, scenario, cmdResult.Problem);
+                    return new QueryResult2(scenario, queryName, null, true, cmdResult.Problem);
                 }
 
                 _logger.LogInformation(
                     "{}-{} - Execution time: {}ms. Processed: {}gb. JobId: {}, BIEngineMode: {}, BytesBilled: {}",
                     scenario,
                     queryName, cmdResult.Time, cmdResult.ByteProcessed,
-                    cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.bytesBilled);
-                return new QueryResult(0, cmdResult.Time, queryName, scenario, "", cmdResult.ByteProcessed, cmdResult.BiEngineMode);
+                    cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.BytesBilled);
+                var data = new Dictionary<string, QueryData>();
+                data.Add("ExecutionTime", new QueryData(cmdResult.Time) );
+                data.Add("BytesProcessed", new QueryData(cmdResult.ByteProcessed));
+                data.Add("BytesBilled", new QueryData(cmdResult.BytesBilled));
+                data.Add("BiMode", new QueryData(-1, cmdResult.BiEngineMode));
+                return new QueryResult2(scenario, queryName, data);
             }
 
             _logger.LogWarning("Command timout");
-            return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
+            return new QueryResult2(scenario, queryName, null, true,$"Timeout at {timeout}ms");
         }
 
         private Task<BqCommandResult> QueryTask(string queryPath)
@@ -73,7 +80,7 @@ namespace AutoDbPerf.Implementations.BigQuery
                     var errors = queryJob.Status.Errors;
                     if (errors != null) return new BqCommandResult(errors.Last().Message, 0, jobId, 0, "", 0);
 
-                    var bytesProcessed =  job.Statistics?.Query?.TotalBytesProcessed / 1073741824d  ?? 0;
+                    var bytesProcessed = job.Statistics?.Query?.TotalBytesProcessed / 1073741824d ?? 0;
                     var biEngineMode = job.Statistics?.Query?.BiEngineStatistics?.BiEngineMode ?? "NONE";
                     var bytesBilled = job.Statistics?.Query?.TotalBytesBilled ?? 0;
                     var queryTime = (job.Statistics?.EndTime - job.Statistics?.StartTime) ?? 0;
@@ -96,6 +103,6 @@ namespace AutoDbPerf.Implementations.BigQuery
         }
 
         private record BqCommandResult(string Problem, float Time, string JobId, float ByteProcessed,
-            string BiEngineMode, long bytesBilled);
+            string BiEngineMode, long BytesBilled);
     }
 }
