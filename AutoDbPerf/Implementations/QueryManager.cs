@@ -30,14 +30,12 @@ namespace AutoDbPerf.Implementations
 
         private record ScenarioQuery(string Scenario, string Query);
 
-        //TODO refactor me: Directory scanner should just return QueryPaths instead of Scenario, IEnumerable<Query>. 
-        // It can then also be responsible for ordering them
-        public IEnumerable<QueryResult> GetQueryResult(string queryPath,
-            int avgPrecision, int timeout = 5000)
+        public IEnumerable<QueryResult> GetQueryResult(string queryPath, int avgPrecision, int timeout = 5000)
         {
             if (avgPrecision <= 0)
                 throw new ArgumentException("Average precision must be greater than 0");
 
+            // lift me up and pass in results - separate I/O 
             _logger.LogInformation("Scanning directories");
             var scenarioQueryPaths = _directoryScanner.ScanDirectories(queryPath).ToArray();
 

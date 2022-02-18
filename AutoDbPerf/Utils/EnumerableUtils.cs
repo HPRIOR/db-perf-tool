@@ -50,7 +50,7 @@ namespace AutoDbPerf.Utils
 
         public static IEnumerable<T> AllButFirst<T>(this IEnumerable<T> ts) => ts.ToArray()[1..];
 
-        public static IEnumerable<QueryResult> AllAfterFirstSuccessful(this IEnumerable<QueryResult> qrs)
+        public static IEnumerable<QueryResult2> AllAfterFirstSuccessful(this IEnumerable<QueryResult2> qrs)
         {
             var qrsList = qrs.ToList();
 
@@ -66,7 +66,7 @@ namespace AutoDbPerf.Utils
             }
             catch (InvalidOperationException)
             {
-                return new List<QueryResult>();
+                return new List<QueryResult2>();
             }
         }
     }

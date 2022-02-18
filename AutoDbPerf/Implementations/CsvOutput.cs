@@ -29,13 +29,17 @@ namespace AutoDbPerf.Implementations
             return sb.ToString();
         }
 
+        /*
+         * One maps have been inserted into TableData, a tabledata interpreter will need to be created
+         * Map<string,string> -> string
+         */
         private IEnumerable<IEnumerable<string>> getDataFrom(TableData tableData)
         {
             return tableData.Rows
                 .Select(row => tableData.Columns.Select(column =>
                         tableData.RowColumnData.ContainsKey((column, row))
                             ? tableData.RowColumnData[(column, row)]
-                            : new TableResult(0, 0))
+                            : new TableResult2(null, true))
                     .Select(tr =>
                         {
                             // refactor this is getting messy

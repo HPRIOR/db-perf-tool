@@ -5,6 +5,6 @@ namespace AutoDbPerf.Interfaces
 {
     public interface IResultAnalyser
     {
-        TableData AnalyseResults(IEnumerable<QueryResult> results);
+        TableData AnalyseResults(IEnumerable<QueryResult2> results);
     }
 }
