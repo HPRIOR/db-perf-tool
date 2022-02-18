@@ -2,17 +2,17 @@
 
 This tool will execute a series of SQL files and produce a table with their planning and/or execution times.
 
-##Using the tool
+## Using the tool
 
 The tool can be run natively with the .NET runtime/sdk or with a container. In either case
 several environment variables need to be set - see below.
 
-###Natively
+### Natively
 ```bash
 dotnet run --project AutoDbPerf 
 ```
 
-##Docker
+## Docker
 To build the container a compressed clickhouse binary needs to be available to the docker file (it is not included in the repo).
 Ensure that zip has been installed, then cd into AutoDbPerf and run:
 ```bash
@@ -22,7 +22,7 @@ Then run:
 ```bash
 docker build . -t auto-db-perf
 ```
-###Postgres 
+### Postgres 
 ```bash
 docker run \ 
   -e TARGET=postgres \
@@ -37,7 +37,7 @@ docker run \
 ```
 Note: when running postgres benchmarks you *must* include explain analyse at the top of each query.
 
-###BigQuery
+### BigQuery
 ```bash
 docker run \
   -e TARGET=bq \
@@ -48,7 +48,7 @@ docker run \
   -v "/local/path/:/app/Volume" \
   auto-db-perf
 ````
-###Elastic
+### Elastic
 
 ```bash
 docker run \
@@ -60,7 +60,7 @@ docker run \
    auto-db-perf 
 ```
 
-###Clickhouse
+### Clickhouse
 ```bash
 docker run  \
   -e TARGET=clickhouse   \
