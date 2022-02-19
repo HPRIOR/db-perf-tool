@@ -44,7 +44,5 @@ namespace AutoDbPerf.Implementations
                     .Select(tr => _tableDataInterpreter.Interpret(tr)));
         }
 
-        private int GetCommaNumberFromData(Dictionary<string, float> numData, Dictionary<string, string> strData) =>
-            throw new NotImplementedException();
     }
 }
