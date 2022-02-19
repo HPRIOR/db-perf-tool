@@ -27,8 +27,11 @@ namespace AutoDbPerf.Implementations
             var columnRow = "scenarios," + tableData.Columns.Aggregate((a, b) => a + "," + b) + "\n";
             sb.Append(columnRow);
 
-            tableData.Rows.Zip(GetDataFrom(tableData)).ToList().ForEach(row =>
-                sb.Append(row.First + "," + row.Second.Aggregate((a, b) => a + "," + b) + "\n"));
+            tableData.Rows.Zip(GetDataFrom(tableData))
+                .Select(x => (rowId: x.First, rowData: x.Second))
+                .ToList()
+                .ForEach(row =>
+                    sb.Append(row.rowId + "," + row.rowData.Aggregate((a, b) => a + "," + b) + "\n"));
             return sb.ToString();
         }
 
