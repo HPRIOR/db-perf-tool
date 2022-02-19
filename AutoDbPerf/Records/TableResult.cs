@@ -10,8 +10,10 @@ namespace AutoDbPerf.Records
      */
     public record TableResult(
         Dictionary<string, float> NumericData,
-        Dictionary<string, string> StringData, // Do this for the QueryResult2
+        Dictionary<string, string> StringData,
         bool HasProblem = false,
-        string Message = ""
-    );
+        bool IsEmpty = false)
+    {
+        public int DataNum { get; } = NumericData.Count + StringData.Count;
+    }
 }

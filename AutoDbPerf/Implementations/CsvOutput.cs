@@ -40,7 +40,7 @@ namespace AutoDbPerf.Implementations
                 .Select(row => tableData.Columns.Select(column =>
                         tableData.RowColumnData.ContainsKey((column, row))
                             ? tableData.RowColumnData[(column, row)]
-                            : new TableResult(null, null, true))
+                            : new TableResult(null, null, true,  true))
                     .Select(tr => _tableDataInterpreter.Interpret(tr)));
         }
 
