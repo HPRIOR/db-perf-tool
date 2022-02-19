@@ -20,10 +20,10 @@ namespace AutoDbPerf.Implementations.Elastic
         {
             // Curl does an annoying thing where it writes network information to stderr
             if (StdErrContainsRealErrorMessage(cmdResult))
-                return new InterpretedCommand(true, errorMessage: cmdResult.Stderr.FlattenToParagraph());
+                return new InterpretedCommand(true, ErrorMessage: cmdResult.Stderr.FlattenToParagraph());
 
             if (StdOutContainsError(cmdResult))
-                return new InterpretedCommand(true, errorMessage: cmdResult.Stdout.FlattenToParagraph());
+                return new InterpretedCommand(true, ErrorMessage: cmdResult.Stdout.FlattenToParagraph());
 
             var time = cmdResult.Stdout.GetNumberFromLineWithoutSpaces(TookIdentifier);
             return new InterpretedCommand(false, time);

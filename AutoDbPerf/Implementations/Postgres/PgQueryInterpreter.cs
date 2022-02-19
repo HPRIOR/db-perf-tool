@@ -19,7 +19,7 @@ namespace AutoDbPerf.Implementations.Postgres
         public InterpretedCommand InterpretCommandResult(CommandResult cmdResult)
         {
             if (cmdResult.Stderr.Any())
-                return new InterpretedCommand(true, errorMessage: cmdResult.Stderr.FlattenToParagraph());
+                return new InterpretedCommand(true, ErrorMessage: cmdResult.Stderr.FlattenToParagraph());
 
             var planningTime = cmdResult.Stdout.GetFirstNumberFromLineWith(PlanningIdentifier);
             var executionTime = cmdResult.Stdout.GetFirstNumberFromLineWith(ExecutionIdentifier);
