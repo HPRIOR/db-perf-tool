@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoDbPerf.Implementations.Postgres;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
 using AutoDbPerf.Utils;
@@ -12,12 +10,6 @@ namespace AutoDbPerf.Implementations
     {
         private readonly IContext _ctx;
         private readonly IQueryResultInterpreter _queryResultInterpreter;
-
-        private enum TimeType
-        {
-            Execution,
-            Planning
-        }
 
         public ResultAnalyser(IContext ctx, IQueryResultInterpreter queryResultInterpreter)
         {
