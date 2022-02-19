@@ -67,8 +67,7 @@ namespace AutoDbPerf.Implementations.ClickHouse
 
                 var cmdResultTime = cmdResult.Time;
                 _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResultTime);
-                var data = new Dictionary<string, float>();
-                data.Add("ExecutionTime",   cmdResultTime );
+                var data = new Dictionary<Data, float> { { Data.EXECUTION_TIME, cmdResultTime } };
                 return new QueryResult(scenario, queryName, data, null);
             }
 

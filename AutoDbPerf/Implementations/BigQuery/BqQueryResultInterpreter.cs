@@ -12,28 +12,28 @@ namespace AutoDbPerf.Implementations.BigQuery
         {
             var qrList = queryResult.ToList();
 
-            var averageExecutionTime = qrList.Average(x => x.NumData["ExecutionTime"]);
-            var executionStdDev = qrList.Select(x => x.NumData["ExecutionTime"]).StdDev();
+            var averageExecutionTime = qrList.Average(x => x.NumData[Data.EXECUTION_TIME]);
+            var executionStdDev = qrList.Select(x => x.NumData[Data.EXECUTION_TIME]).StdDev();
 
-            var avgBytesProcessed = qrList.Average(x => x.NumData["BytesProcessed"]);
-            var bytesProcessesStdDev = qrList.Select(x => x.NumData["BytesProcessed"]).StdDev();
+            var avgBytesProcessed = qrList.Average(x => x.NumData[Data.BYTES_PROCESSED]);
+            var bytesProcessesStdDev = qrList.Select(x => x.NumData[Data.BYTES_PROCESSED]).StdDev();
 
-            var avgBytesBilled = qrList.Average(x => x.NumData["BytesBilled"]);
-            var bytesBilledStdDev = qrList.Select(x => x.NumData["BytesBilled"]).StdDev();
+            var avgBytesBilled = qrList.Average(x => x.NumData[Data.BYTES_BILLED]);
+            var bytesBilledStdDev = qrList.Select(x => x.NumData[Data.BYTES_BILLED]).StdDev();
 
-            var numData = new Dictionary<string, float>
+            var numData = new Dictionary<Data, float>
             {
-                { "AvgExecutionTime", averageExecutionTime },
-                { "ExecutionStdDev", executionStdDev },
-                { "AvgBytesProcessed", avgBytesProcessed },
-                { "BytesProcessed", bytesProcessesStdDev },
-                { "AvgBytesBilled", avgBytesBilled },
-                { "BytesBilledStdDev", bytesBilledStdDev }
+                { Data.AVG_EXECUTION_TIME, averageExecutionTime },
+                { Data.EXECUTION_STD_DEV, executionStdDev },
+                { Data.AVG_BYTES_PROCESSED, avgBytesProcessed },
+                { Data.BYTES_PROCESSED_STD_DEV, bytesProcessesStdDev },
+                { Data.AVG_BYTES_BILLED, avgBytesBilled },
+                { Data.BYTES_BILLED_STD_DEV, bytesBilledStdDev }
             };
 
-            var strData = new Dictionary<string, string>()
+            var strData = new Dictionary<Data, string>()
             {
-                { "BiMode", ParseMultipleBiEngineResults(qrList.Select(x => x.StringData["BiMode"])) }
+                { Data.BI_MODE, ParseMultipleBiEngineResults(qrList.Select(x => x.StringData[Data.BI_MODE])) }
             };
 
             return new TableResult(numData, strData);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AutoDbPerf.Implementations;
 
 namespace AutoDbPerf.Records
 {
@@ -7,8 +8,8 @@ namespace AutoDbPerf.Records
      * The rest can stay the same (Message: string, Problem: bool)
      */
     public record TableResult(
-        Dictionary<string, float> NumericData,
-        Dictionary<string, string> StringData,
+        Dictionary<Data, float> NumericData,
+        Dictionary<Data, string> StringData,
         bool HasProblem = false,
         bool IsEmpty = false)
     {

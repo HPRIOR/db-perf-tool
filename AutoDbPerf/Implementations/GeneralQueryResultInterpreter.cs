@@ -13,13 +13,13 @@ namespace AutoDbPerf.Implementations
             var qrList = queryResult.ToList();
 
 
-            var averageExecutionTime = qrList.Average(x => x.NumData["ExecutionTime"]);
-            var executionStdDev = qrList.Select(x => x.NumData["ExecutionTime"]).StdDev();
+            var averageExecutionTime = qrList.Average(x => x.NumData[Data.EXECUTION_TIME]);
+            var executionStdDev = qrList.Select(x => x.NumData[Data.EXECUTION_TIME]).StdDev();
 
-            var numData = new Dictionary<string, float>
+            var numData = new Dictionary<Data, float>
             {
-                { "AvgExecutionTime", averageExecutionTime },
-                { "ExecutionStdDev", executionStdDev }
+                { Data.AVG_EXECUTION_TIME, averageExecutionTime },
+                { Data.EXECUTION_STD_DEV, executionStdDev }
             };
 
             return new TableResult(numData, null);

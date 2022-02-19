@@ -41,9 +41,11 @@ namespace AutoDbPerf.Implementations
                     interpretedResult.ExecutionTime,
                     interpretedResult.PlanningTime);
 
-                var data = new Dictionary<string, float>();
-                data.Add("PlanningTime", interpretedResult.PlanningTime);
-                data.Add("ExecutionTime", interpretedResult.ExecutionTime);
+                var data = new Dictionary<Data, float>
+                {
+                    { Data.PLANNING_TIME, interpretedResult.PlanningTime },
+                    { Data.EXECUTION_TIME, interpretedResult.ExecutionTime }
+                };
                 return new QueryResult(scenario, queryName, data, null);
             }
 

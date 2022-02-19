@@ -13,9 +13,10 @@ namespace AutoDbPerf.Implementations.BigQuery
             if (tr.HasProblem)
                 return "Error - see logs";
             return
-                $"Execution: {tr.NumericData["AvgExecutionTime"]}ms " +
-                $"SD: {tr.NumericData["ExecutionStdDev"]}{tr.NumericData["AvgBytesProcessed"]} " +
-                $"({tr.StringData["BiMode"]})";
+                $"Execution: {tr.NumericData[Data.AVG_EXECUTION_TIME]}ms " +
+                $"SD: {tr.NumericData[Data.EXECUTION_STD_DEV]} " +
+                $"BytesProcessed: {tr.NumericData[Data.AVG_BYTES_BILLED]} " +
+                $"({tr.StringData[Data.BI_MODE]})";
         }
     }
 }

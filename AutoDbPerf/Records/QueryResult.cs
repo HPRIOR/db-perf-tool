@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using AutoDbPerf.Implementations;
 
 namespace AutoDbPerf.Records
 {
     public class QueryResult
     {
         public QueryResult(string scenario, string query,
-            Dictionary<string, float> numData, Dictionary<string,string> stringData, bool hasProblem = false, string problem = "")
+            Dictionary<Data, float> numData, Dictionary<Data,string> stringData, bool hasProblem = false, string problem = "")
         {
             NumData = numData;
             StringData = stringData;
@@ -18,8 +19,8 @@ namespace AutoDbPerf.Records
         }
 
         public readonly TimeSpan Time;
-        public readonly Dictionary<string, float> NumData;
-        public readonly Dictionary<string, string> StringData;
+        public readonly Dictionary<Data, float> NumData;
+        public readonly Dictionary<Data, string> StringData;
         public readonly bool HasProblem;
         public readonly string Problem;
         public readonly string Query;

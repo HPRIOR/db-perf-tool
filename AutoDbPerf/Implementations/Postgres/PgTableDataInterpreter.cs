@@ -12,11 +12,11 @@ namespace AutoDbPerf.Implementations.Postgres
             if (tr.HasProblem)
                 return "Error - see logs";
             return
-                $"Planning: {tr.NumericData["AvgPlanningTime"]} " +
-                $"SD: {tr.NumericData["PlanningStdDev"]} " +
-                $"Execution: {tr.NumericData["AvgExecutionTime"]} " +
-                $"SD: {tr.NumericData["ExecutionStdDev"]} " +
-                $"Total: {tr.NumericData["AvgPlanningTime"] + tr.NumericData["AvgExecutionTime"]}";
+                $"Planning: {tr.NumericData[Data.AVG_PLANNING_TIME]} " +
+                $"SD: {tr.NumericData[Data.PLANNING_STD_DEV]} " +
+                $"Execution: {tr.NumericData[Data.AVG_EXECUTION_TIME]} " +
+                $"SD: {tr.NumericData[Data.EXECUTION_STD_DEV]} " +
+                $"Total: {tr.NumericData[Data.AVG_PLANNING_TIME] + tr.NumericData[Data.AVG_EXECUTION_TIME]}";
         }
     }
 }

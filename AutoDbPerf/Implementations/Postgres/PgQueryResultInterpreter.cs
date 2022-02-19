@@ -14,17 +14,17 @@ namespace AutoDbPerf.Implementations.Postgres
             var qrList = queryResult.ToList();
 
 
-            var averagePlanningTime = qrList.Average(x => x.NumData["PlanningTime"]);
-            var planningStdDev = qrList.Select(x => x.NumData["PlanningTime"]).StdDev();
-            var averageExecutionTime = qrList.Average(x => x.NumData["ExecutionTime"]);
-            var executionStdDev = qrList.Select(x => x.NumData["ExecutionTime"]).StdDev();
+            var averagePlanningTime = qrList.Average(x => x.NumData[Data.PLANNING_TIME]);
+            var planningStdDev = qrList.Select(x => x.NumData[Data.PLANNING_TIME]).StdDev();
+            var averageExecutionTime = qrList.Average(x => x.NumData[Data.EXECUTION_TIME]);
+            var executionStdDev = qrList.Select(x => x.NumData[Data.EXECUTION_TIME]).StdDev();
 
-            var numData = new Dictionary<string, float>
+            var numData = new Dictionary<Data, float>
             {
-                { "AvgPlanningTime", averagePlanningTime },
-                { "PlanningStdDev", planningStdDev },
-                { "AvgExecutionTime", averageExecutionTime },
-                { "ExecutionStdDev", executionStdDev }
+                { Data.AVG_PLANNING_TIME, averagePlanningTime },
+                { Data.PLANNING_STD_DEV, planningStdDev },
+                { Data.AVG_EXECUTION_TIME, averageExecutionTime },
+                { Data.EXECUTION_STD_DEV, executionStdDev }
             };
 
             return new TableResult(numData, null);

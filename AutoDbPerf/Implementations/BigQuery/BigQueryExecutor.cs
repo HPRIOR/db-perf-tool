@@ -44,13 +44,13 @@ namespace AutoDbPerf.Implementations.BigQuery
                     scenario,
                     queryName, cmdResult.Time, cmdResult.ByteProcessed,
                     cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.BytesBilled);
-                var numData = new Dictionary<string, float>
+                var numData = new Dictionary<Data, float>
                 {
-                    { "ExecutionTime", cmdResult.Time },
-                    { "BytesProcessed", cmdResult.ByteProcessed },
-                    { "BytesBilled", cmdResult.BytesBilled }
+                    { Data.EXECUTION_TIME, cmdResult.Time },
+                    { Data.BYTES_PROCESSED, cmdResult.ByteProcessed },
+                    { Data.BYTES_BILLED, cmdResult.BytesBilled }
                 };
-                var strData = new Dictionary<string, string> { { "BiMode", cmdResult.BiEngineMode } };
+                var strData = new Dictionary<Data, string> { { Data.BI_MODE, cmdResult.BiEngineMode } };
                 return new QueryResult(scenario, queryName, numData, strData);
             }
 
