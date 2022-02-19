@@ -8,9 +8,10 @@ namespace AutoDbPerf.Implementations.BigQuery
     {
         public string Interpret(TableResult tr)
         {
+            if (tr.IsEmpty)
+                return "N/A";
             if (tr.HasProblem)
                 return "Error - see logs";
-
             return
                 $"Execution: {tr.NumericData["AvgExecutionTime"]}ms " +
                 $"SD: {tr.NumericData["ExecutionStdDev"]}{tr.NumericData["AvgBytesProcessed"]} " +

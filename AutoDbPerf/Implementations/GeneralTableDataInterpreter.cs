@@ -7,6 +7,9 @@ namespace AutoDbPerf.Implementations
     {
         public string Interpret(TableResult tr)
         {
+            if (tr.IsEmpty)
+                return "N/A";
+            
             if (tr.HasProblem)
                 return "Error - see logs";
             return

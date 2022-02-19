@@ -7,6 +7,8 @@ namespace AutoDbPerf.Implementations.Postgres
     {
         public string Interpret(TableResult tr)
         {
+            if (tr.IsEmpty)
+                return "N/A";
             if (tr.HasProblem)
                 return "Error - see logs";
             return
