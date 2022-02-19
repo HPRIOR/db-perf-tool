@@ -28,8 +28,8 @@ namespace IntegrationTests
                 services.AddSingleton<IContext>(new Context(order));
                 services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                 services.AddTransient<ICommandExecutor, CommandExecutor>();
-                services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
-                services.AddTransient<IQueryInterpreter, PostgresQueryInterpreter>();
+                services.AddTransient<ICommandGenerator, PgCommandGenerator>();
+                services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
                 services.AddTransient<IDirectoryScanner, DirectoryScanner>();
             }).Build();
             return ActivatorUtilities.CreateInstance<QueryManager>(host.Services);

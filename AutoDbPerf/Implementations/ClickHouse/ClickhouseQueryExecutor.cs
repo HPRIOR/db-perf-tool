@@ -51,7 +51,7 @@ namespace AutoDbPerf.Implementations.ClickHouse
             });
         }
 
-        public QueryResult2 ExecuteQuery(string queryPath, string scenario, int timeout)
+        public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
         {
             var queryName = queryPath.GetQueryNameFromPath();
             var cmdTask = ExecuteCommand(queryPath);
@@ -62,18 +62,18 @@ namespace AutoDbPerf.Implementations.ClickHouse
                 if (cmdResult.Problem.Any())
                 {
                     _logger.LogError("Error occured during query Execution: {}", cmdResult.Problem);
-                    return new QueryResult2(scenario, queryName, null, true, cmdResult.Problem);
+                    return new QueryResult(scenario, queryName, null, null, true, cmdResult.Problem);
                 }
 
                 var cmdResultTime = cmdResult.Time;
                 _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResultTime);
-                var data = new Dictionary<string, QueryData>();
-                data.Add("ExecutionTime", new QueryData(cmdResultTime));
-                return new QueryResult2(scenario, queryName, data);
+                var data = new Dictionary<string, float>();
+                data.Add("ExecutionTime",   cmdResultTime );
+                return new QueryResult(scenario, queryName, data, null);
             }
 
             _logger.LogWarning("Command timeout");
-            return new QueryResult2(scenario, queryName, null, true, $"Timeout at {timeout}ms");
+            return new QueryResult(scenario, queryName, null, null, true, $"Timeout at {timeout}ms");
         }
 
         private record ClickHouseCommandResult(string Problem, float Time);

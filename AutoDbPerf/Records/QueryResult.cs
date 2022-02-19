@@ -1,34 +1,28 @@
 using System;
+using System.Collections.Generic;
 
 namespace AutoDbPerf.Records
 {
-    // TODO - Abstract query result into and interface with string -> string map to retrieve data
-    public record QueryResult
+    public class QueryResult
     {
-        /*
-         * Tech specific fields should be included in a HashMap (planningTime, executionTime, bytesProcessed, biEngine).
-         * The rest can stay the same 
-         */
-        public QueryResult(float planningTime, float executionTime, string query, string scenario, string problem = "", float bytesProcessed = 0, string biEngine = "")
+        public QueryResult(string scenario, string query,
+            Dictionary<string, float> numData, Dictionary<string,string> stringData, bool hasProblem = false, string problem = "")
         {
-            BytesProcessed = bytesProcessed;
-            PlanningTime = planningTime;
+            NumData = numData;
+            StringData = stringData;
+            HasProblem = hasProblem;
+            Problem = problem;
             Query = query;
             Scenario = scenario;
-            Problem = problem;
-            ExecutionTime = executionTime;
             Time = DateTime.Now.TimeOfDay;
-            BiEngine = biEngine;
         }
 
-        public string BiEngine { get;}
-
-        public readonly float BytesProcessed;
-        public float PlanningTime { get; }
-        public float ExecutionTime { get; }
-        public string Query { get; }
-        public string Scenario { get; }
-        public string Problem { get; }
-        public TimeSpan Time { get; }
+        public readonly TimeSpan Time;
+        public readonly Dictionary<string, float> NumData;
+        public readonly Dictionary<string, string> StringData;
+        public readonly bool HasProblem;
+        public readonly string Problem;
+        public readonly string Query;
+        public readonly string Scenario;
     }
 }

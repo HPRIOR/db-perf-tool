@@ -4,6 +4,6 @@ namespace AutoDbPerf.Interfaces
 {
     public interface ITableDataInterpreter
     {
-        string Interpret(TableResult2 tableResult);
+        string Interpret(TableResult tr);
     }
 }

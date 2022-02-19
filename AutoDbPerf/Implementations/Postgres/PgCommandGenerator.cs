@@ -2,11 +2,11 @@ using AutoDbPerf.Interfaces;
 
 namespace AutoDbPerf.Implementations.Postgres
 {
-    public class PostgresCommandGenerator : ICommandGenerator
+    public class PgCommandGenerator : ICommandGenerator
     {
         private readonly IContext _ctx;
 
-        public PostgresCommandGenerator(IContext ctx)
+        public PgCommandGenerator(IContext ctx)
         {
             _ctx = ctx;
         }

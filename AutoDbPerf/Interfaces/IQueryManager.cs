@@ -5,7 +5,7 @@ namespace AutoDbPerf.Interfaces
 {
     public interface IQueryManager
     {
-        public IEnumerable<QueryResult2> GetQueryResult(string queryPath,
+        public IEnumerable<QueryResult> GetQueryResult(string queryPath,
             int avgPrecision, int timeout = 5000);
     }
 }

@@ -21,11 +21,11 @@ namespace AutoDbPerf.Implementations
             _logger = loggerFactory.CreateLogger<CliQueryExecutor>();
         }
 
-        public QueryResult2 ExecuteQuery(string queryPath, string scenario, int timeout)
+        public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
         {
             var queryName = queryPath.GetQueryNameFromPath();
             _logger.LogInformation("Executing : {}-{}", scenario, queryName);
-            
+
             var task = _commandExecutor.ExecuteCommand(queryPath, _queryInterpreter.InitialScanPredicate());
             if (task.Wait(timeout))
             {
@@ -34,21 +34,21 @@ namespace AutoDbPerf.Implementations
                 if (interpretedResult.IsError)
                 {
                     _logger.LogError("Process errored: {}", interpretedResult.ErrorMessage);
-                    return new QueryResult2(scenario, queryName, null, true, "Error occured - see logs");
+                    return new QueryResult(scenario, queryName, null, null, true, "Error occured - see logs");
                 }
 
                 _logger.LogInformation("{}-{} - Execution time: {}, Planning time: {}", scenario, queryName,
                     interpretedResult.ExecutionTime,
                     interpretedResult.PlanningTime);
 
-                var data = new Dictionary<string, QueryData>();
-                data.Add("PlanningTime", new QueryData(interpretedResult.PlanningTime));
-                data.Add("ExecutionTime", new QueryData(interpretedResult.ExecutionTime));
-                return new QueryResult2(scenario, queryName, data);
+                var data = new Dictionary<string, float>();
+                data.Add("PlanningTime", interpretedResult.PlanningTime);
+                data.Add("ExecutionTime", interpretedResult.ExecutionTime);
+                return new QueryResult(scenario, queryName, data, null);
             }
 
             _logger.LogWarning("Command timout");
-            return new QueryResult2(scenario, queryName, null, true, $"Timeout at {timeout}ms");
+            return new QueryResult(scenario, queryName, null, null, true, $"Timeout at {timeout}ms");
         }
     }
 }

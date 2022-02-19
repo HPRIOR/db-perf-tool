@@ -5,7 +5,7 @@ namespace AutoDbPerf.Records
     public record TableData
     {
         public TableData(IEnumerable<string> columns, IEnumerable<string> rows,
-            Dictionary<(string, string), TableResult2> rowColumnData)
+            Dictionary<(string, string), TableResult> rowColumnData)
         {
             Columns = columns;
             Rows = rows;
@@ -14,6 +14,6 @@ namespace AutoDbPerf.Records
 
         public IEnumerable<string> Columns { get; }
         public IEnumerable<string> Rows { get; }
-        public Dictionary<(string scenario, string query), TableResult2> RowColumnData { get; }
+        public Dictionary<(string scenario, string query), TableResult> RowColumnData { get; }
     }
 }

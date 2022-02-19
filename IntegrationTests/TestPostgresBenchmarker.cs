@@ -21,9 +21,9 @@ namespace IntegrationTests
                 services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                 services.AddTransient<IDirectoryScanner, DirectoryScanner>();
                 services.AddTransient<ICommandExecutor, CommandExecutor>();
-                services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
-                services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
-                services.AddTransient<IQueryInterpreter, PostgresQueryInterpreter>();
+                services.AddTransient<ICommandGenerator, PgCommandGenerator>();
+                services.AddTransient<ICommandGenerator, PgCommandGenerator>();
+                services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
                 services.AddSingleton<IContext>(new Context());
             }).Build();
             _benchmarker = ActivatorUtilities.CreateInstance<Benchmarker>(host.Services);

@@ -6,7 +6,7 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations.Postgres
 {
-    public class PostgresQueryInterpreter : IQueryInterpreter
+    public class PgQueryInterpreter : IQueryInterpreter
     {
         private const string PlanningIdentifier = "Planning";
         private const string ExecutionIdentifier = "Execution";

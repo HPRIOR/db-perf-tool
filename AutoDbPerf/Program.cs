@@ -61,20 +61,28 @@ namespace AutoDbPerf
                 case "postgres":
                     services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
-                    services.AddTransient<IQueryInterpreter, PostgresQueryInterpreter>();
-                    services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
+                    services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
+                    services.AddTransient<ICommandGenerator, PgCommandGenerator>();
+                    services.AddTransient<IQueryResultInterpreter, PgQueryResultInterpreter>();
+                    services.AddTransient<ITableDataInterpreter, PgTableDataInterpreter>();
                     return;
                 case "elastic":
                     services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();
+                    services.AddTransient<IQueryResultInterpreter, GeneralQueryResultInterpreter>();
+                    services.AddTransient<ITableDataInterpreter, GeneralTableDataInterpreter>();
                     return;
                 case "bq":
                     services.AddTransient<IQueryExecutor, BigQueryExecutor>();
+                    services.AddTransient<IQueryResultInterpreter, BqQueryResultInterpreter>();
+                    services.AddTransient<ITableDataInterpreter, BqTableDataInterpreter>();
                     return;
                 case "clickhouse":
                     services.AddTransient<IQueryExecutor, ClickhouseQueryExecutor>();
+                    services.AddTransient<IQueryResultInterpreter, GeneralQueryResultInterpreter>();
+                    services.AddTransient<ITableDataInterpreter, GeneralTableDataInterpreter>();
                     services.AddSingleton<HttpClient>();
                     return;
                 default:

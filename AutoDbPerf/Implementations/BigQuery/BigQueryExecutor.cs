@@ -24,7 +24,7 @@ namespace AutoDbPerf.Implementations.BigQuery
             _ctx = ctx;
         }
 
-        public QueryResult2 ExecuteQuery(string queryPath, string scenario, int timeout)
+        public QueryResult ExecuteQuery(string queryPath, string scenario, int timeout)
         {
             var queryName = queryPath.GetQueryNameFromPath();
             var queryTask = QueryTask(queryPath);
@@ -36,8 +36,7 @@ namespace AutoDbPerf.Implementations.BigQuery
                 {
                     _logger.LogError("Error occured during query execution: {}. JobId: {}", cmdResult.Problem,
                         cmdResult.JobId);
-                    // return new QueryResult(0, 0, queryName, scenario, cmdResult.Problem);
-                    return new QueryResult2(scenario, queryName, null, true, cmdResult.Problem);
+                    return new QueryResult(scenario, queryName, null, null, true, cmdResult.Problem);
                 }
 
                 _logger.LogInformation(
@@ -45,16 +44,18 @@ namespace AutoDbPerf.Implementations.BigQuery
                     scenario,
                     queryName, cmdResult.Time, cmdResult.ByteProcessed,
                     cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.BytesBilled);
-                var data = new Dictionary<string, QueryData>();
-                data.Add("ExecutionTime", new QueryData(cmdResult.Time) );
-                data.Add("BytesProcessed", new QueryData(cmdResult.ByteProcessed));
-                data.Add("BytesBilled", new QueryData(cmdResult.BytesBilled));
-                data.Add("BiMode", new QueryData(-1, cmdResult.BiEngineMode));
-                return new QueryResult2(scenario, queryName, data);
+                var numData = new Dictionary<string, float>
+                {
+                    { "ExecutionTime", cmdResult.Time },
+                    { "BytesProcessed", cmdResult.ByteProcessed },
+                    { "BytesBilled", cmdResult.BytesBilled }
+                };
+                var strData = new Dictionary<string, string> { { "BiMode", cmdResult.BiEngineMode } };
+                return new QueryResult(scenario, queryName, numData, strData);
             }
 
             _logger.LogWarning("Command timout");
-            return new QueryResult2(scenario, queryName, null, true,$"Timeout at {timeout}ms");
+            return new QueryResult(scenario, queryName, null, null, true, $"Timeout at {timeout}ms");
         }
 
         private Task<BqCommandResult> QueryTask(string queryPath)
