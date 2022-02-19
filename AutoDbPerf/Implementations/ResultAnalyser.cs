@@ -41,7 +41,7 @@ namespace AutoDbPerf.Implementations
                         if (ResultsAreAllBad(filteredQueryResults))
                         {
                             var message = GetErrorMessageFromResults(filteredQueryResults);
-                            return new TableResult(null, null, true, message);
+                            return new TableResult(null, null, true);
                         }
 
 
