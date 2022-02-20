@@ -36,12 +36,12 @@ namespace IntegrationTests
             var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 5000);
             Assert.That(sut.Problem, Is.Empty);
         }
-        
+
         [Test]
         public void WillReturnQueryResult_WithTiming()
         {
             var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 5000);
-            Assert.That(sut.ExecutionTime, Is.GreaterThan(0));
+            Assert.That(sut.NumData[Data.EXECUTION_TIME], Is.GreaterThan(0));
         }
         [Test]
         public void WillReturnError_WithBadCommand()

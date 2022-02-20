@@ -8,7 +8,7 @@ namespace AutoDbPerf.Implementations
 {
     public class DirectoryScanner : IDirectoryScanner
     {
-        public IEnumerable<ScenarioQueryPath> ScanDirectories(string path)
+        public IEnumerable<QueryInfo> ScanDirectories(string path)
         {
             var scenarios = Directory
                 .EnumerateDirectories(path)
@@ -17,7 +17,7 @@ namespace AutoDbPerf.Implementations
             
 
             return scenarios.OrderBy(x => x).Select(scenario =>
-                new ScenarioQueryPath(scenario.Split(Path.DirectorySeparatorChar).Last(),
+                new QueryInfo(scenario.Split(Path.DirectorySeparatorChar).Last(),
                     Directory.EnumerateFiles(scenario).Where(NotDotFile)));
         }
 

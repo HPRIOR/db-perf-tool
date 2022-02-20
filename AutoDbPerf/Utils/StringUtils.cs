@@ -14,5 +14,15 @@ namespace AutoDbPerf.Utils
         {
             return path.Split(Path.DirectorySeparatorChar).Last().Split(".").First();
         }
+
+        public static string MultiplyBy(this string str, int num, string separator = "")
+        {
+            if (num == 0)
+                return "";
+            return Enumerable
+                .Range(0, num)
+                .Select(_ => str)
+                .Aggregate((a, b) => $"{a}{separator}{b}");
+        }
     }
 }

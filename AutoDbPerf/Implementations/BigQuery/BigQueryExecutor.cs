@@ -62,7 +62,6 @@ namespace AutoDbPerf.Implementations.BigQuery
         {
             return Task.Run(() =>
             {
-                //TODO use polly
                 try
                 {
                     var projectId = _ctx.GetEnv(ContextKey.GOOGLEPROJECTID);

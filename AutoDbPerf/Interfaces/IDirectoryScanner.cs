@@ -5,6 +5,6 @@ namespace AutoDbPerf.Interfaces
 {
     public interface IDirectoryScanner
     {
-        IEnumerable<ScenarioQueryPath> ScanDirectories(string path);
+        IEnumerable<QueryInfo> ScanDirectories(string path);
     }
 }

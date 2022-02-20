@@ -6,12 +6,11 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations
 {
-    public class GeneralQueryResultInterpreter : IQueryResultInterpreter
+    public class QueryResultInterpreter : IQueryResultInterpreter
     {
         public TableResult GetTableDataFrom(IEnumerable<QueryResult> queryResult)
         {
             var qrList = queryResult.ToList();
-
 
             var averageExecutionTime = qrList.Average(x => x.NumData[Data.EXECUTION_TIME]);
             var executionStdDev = qrList.Select(x => x.NumData[Data.EXECUTION_TIME]).StdDev();

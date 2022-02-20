@@ -32,9 +32,9 @@ namespace AutoDbPerf
                 .ConfigureServices((ctx, services) =>
                 {
                     services.AddTransient<IQueryManager, QueryManager>();
-                    services.AddTransient<IResultAnalyser, ResultAnalyser>();
                     services.AddTransient<ITableOutput, CsvOutput>();
                     services.AddTransient<IDirectoryScanner, DirectoryScanner>();
+                    services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
                     services.AddSingleton<IContext, Context>();
                     services.AddLogging();
                     BuildWith(ctx.Configuration, services);
@@ -64,25 +64,21 @@ namespace AutoDbPerf
                     services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, PgCommandGenerator>();
                     services.AddTransient<IQueryResultInterpreter, PgQueryResultInterpreter>();
-                    services.AddTransient<ITableDataInterpreter, PgTableDataInterpreter>();
                     return;
                 case "elastic":
                     services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();
-                    services.AddTransient<IQueryResultInterpreter, GeneralQueryResultInterpreter>();
-                    services.AddTransient<ITableDataInterpreter, GeneralTableDataInterpreter>();
+                    services.AddTransient<IQueryResultInterpreter, QueryResultInterpreter>();
                     return;
                 case "bq":
                     services.AddTransient<IQueryExecutor, BigQueryExecutor>();
                     services.AddTransient<IQueryResultInterpreter, BqQueryResultInterpreter>();
-                    services.AddTransient<ITableDataInterpreter, BqTableDataInterpreter>();
                     return;
                 case "clickhouse":
                     services.AddTransient<IQueryExecutor, ClickhouseQueryExecutor>();
-                    services.AddTransient<IQueryResultInterpreter, GeneralQueryResultInterpreter>();
-                    services.AddTransient<ITableDataInterpreter, GeneralTableDataInterpreter>();
+                    services.AddTransient<IQueryResultInterpreter, QueryResultInterpreter>();
                     services.AddSingleton<HttpClient>();
                     return;
                 default:

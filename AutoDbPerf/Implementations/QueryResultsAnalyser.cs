@@ -6,28 +6,25 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations
 {
-    public class ResultAnalyser : IResultAnalyser
+    using TableResults = Dictionary<(string scenario, string query), TableResult>;
+    public class QueryResultsAnalyser : IQueryResultsAnalyser
     {
         private readonly IContext _ctx;
         private readonly IQueryResultInterpreter _queryResultInterpreter;
 
-        public ResultAnalyser(IContext ctx, IQueryResultInterpreter queryResultInterpreter)
+        public QueryResultsAnalyser(IContext ctx, IQueryResultInterpreter queryResultInterpreter)
         {
             _ctx = ctx;
             _queryResultInterpreter = queryResultInterpreter;
         }
-
-        public TableData AnalyseResults(IEnumerable<QueryResult> results)
+        
+        public TableData GetTableData(IEnumerable<QueryResult> queryResults)
         {
-            var resultArray = results.ToArray();
-            var columns = GetColumns(resultArray);
-            var rows = GetRows(resultArray);
-            var dataDictionary = GetCellResults(resultArray);
-
-            return new TableData(columns, rows, dataDictionary);
+            return new TableData(GetCellResults(queryResults));
         }
 
-        private Dictionary<(string, string), TableResult> GetCellResults(IEnumerable<QueryResult> results)
+        private TableResults GetCellResults(
+            IEnumerable<QueryResult> results)
         {
             return results
                 .GroupBy(qr => new { qr.Scenario, qr.Query })
@@ -43,7 +40,6 @@ namespace AutoDbPerf.Implementations
                             var message = GetErrorMessageFromResults(filteredQueryResults);
                             return new TableResult(null, null, true);
                         }
-
 
                         var data = filteredQueryResults.Where(ResultHasData).ToList(); // will return min of 1 result
                         return _queryResultInterpreter.GetTableDataFrom(data);
@@ -76,17 +72,6 @@ namespace AutoDbPerf.Implementations
                 .Select(r => r.Problem)
                 .ToHashSet()
                 .FlattenToCommaList();
-        }
-
-
-        private IEnumerable<string> GetColumns(IEnumerable<QueryResult> result)
-        {
-            return result.Select(r => r.Scenario).ToHashSet();
-        }
-
-        private IEnumerable<string> GetRows(IEnumerable<QueryResult> result)
-        {
-            return result.Select(r => r.Query).ToHashSet();
         }
     }
 }

@@ -60,7 +60,7 @@ namespace AutoDbPerf.Utils
                     Enumerable
                         .Range(0, qrsList.Count)
                         .Zip(qrsList)
-                        .First(tup => tup.Second.Problem.Length == 0)
+                        .First(tup => !tup.Second.HasProblem)
                         .First;
                 return qrsList.Skip(upToFirstResult + 1);
             }

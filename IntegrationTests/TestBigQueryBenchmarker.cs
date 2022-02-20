@@ -19,7 +19,6 @@ namespace IntegrationTests
             var host = Host.CreateDefaultBuilder().ConfigureServices((_, services) =>
             {
                 services.AddTransient<IQueryManager, QueryManager>();
-                services.AddTransient<IResultAnalyser, ResultAnalyser>();
                 services.AddTransient<ITableOutput, CsvOutput>();
                 services.AddTransient<IQueryExecutor, BigQueryExecutor>();
                 services.AddTransient<IDirectoryScanner, DirectoryScanner>();
