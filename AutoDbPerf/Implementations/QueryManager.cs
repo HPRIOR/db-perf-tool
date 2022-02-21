@@ -11,24 +11,16 @@ namespace AutoDbPerf.Implementations
     public class QueryManager : IQueryManager
     {
         private readonly IDirectoryScanner _directoryScanner;
-        private readonly IQueryResultInterpreter _queryResultInterpreter;
-        private readonly ILogger<QueryManager> _logger;
         private readonly IContext _context;
         private readonly IQueryExecutor _queryExecutor;
 
         public QueryManager(
-            ILoggerFactory loggerFactory,
             IContext context,
-            IQueryExecutor queryExecutor,
-            IDirectoryScanner directoryScanner,
-            IQueryResultInterpreter queryResultInterpreter
+            IQueryExecutor queryExecutor
         )
         {
-            _logger = loggerFactory.CreateLogger<QueryManager>();
             _context = context;
             _queryExecutor = queryExecutor;
-            _directoryScanner = directoryScanner;
-            _queryResultInterpreter = queryResultInterpreter;
         }
 
         private record ScenarioQuery(string Scenario, string Query);
@@ -44,7 +36,7 @@ namespace AutoDbPerf.Implementations
                     scenarioQueryPath.Queries.OrderBy(x => x).Select(query => new ScenarioQuery
                         (scenarioQueryPath.Scenario, query))));
 
-            return multipliedScenarioQueries.Select(sqp =>
+            return GetOrderedQueries(multipliedScenarioQueries).Select(sqp =>
                 _queryExecutor.ExecuteQuery(sqp.Query, sqp.Scenario, timeout));
         }
 
