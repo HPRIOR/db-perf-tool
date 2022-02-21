@@ -47,6 +47,13 @@ namespace AutoDbPerf.Records
                 .First(kv => kv.Value.DataNum != null || kv.Value.StringData != null).Value;
         }
 
+        /*
+         * This smells like a leak. Should be the responsibility of the consumer (e.g. some output class such as CsvOutput)
+         * CsvOutput relies this ordering to produce the correct output, so it shouldn't be encapsulated here.
+         * The same logic could be achieved by querying HasDataFor and GetTableResults for each combo of
+         * Row and ScenarioColum data. Since the logic may need to be reused, it could be encapsulated behind an
+         * IOrderedColumns: TableData -> List<string>(cols) -> List<string>(rows) -> List<string> (ordered data)
+         */
         private static  List<string> GetOrderedDataColumns(
             TableResults tableResults)
         {
