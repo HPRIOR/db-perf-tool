@@ -17,7 +17,6 @@ namespace AutoDbPerf.Records
         {
             ScenarioColumns = GetScenarioColumns(tableResults);
             Rows = GetRows(tableResults);
-            OrderedDataColumns = GetOrderedDataColumns(tableResults);
             _tableResults = tableResults;
         }
 
@@ -25,7 +24,6 @@ namespace AutoDbPerf.Records
 
         public IEnumerable<string> ScenarioColumns { get; }
         public IEnumerable<string> Rows { get; }
-        public List<string> OrderedDataColumns { get; }
 
         public TableResult GetTableResult(string scenario, string query)
         {
@@ -37,41 +35,6 @@ namespace AutoDbPerf.Records
             return _tableResults.ContainsKey((scenario, query));
         }
 
-        private static TableResult? GetFirstTableResultWithData(
-            TableResults scenarioQueryData)
-        {
-            if (!scenarioQueryData.Any(kv => kv.Value.DataNum != null || kv.Value.StringData != null))
-                return null;
-
-            return scenarioQueryData
-                .First(kv => kv.Value.DataNum != null || kv.Value.StringData != null).Value;
-        }
-
-        /*
-         * This smells like a leak. Should be the responsibility of the consumer (e.g. some output class such as CsvOutput)
-         * CsvOutput relies this ordering to produce the correct output, so it shouldn't be encapsulated here.
-         * The same logic could be achieved by querying HasDataFor and GetTableResults for each combo of
-         * Row and ScenarioColum data. Since the logic may need to be reused, it could be encapsulated behind an
-         * IOrderedColumns: TableData -> List<string>(cols) -> List<string>(rows) -> List<string> (ordered data)
-         */
-        private static  List<string> GetOrderedDataColumns(
-            TableResults tableResults)
-        {
-            var firstTableResultWithData = GetFirstTableResultWithData(tableResults);
-            var numericData = firstTableResultWithData?.NumericData?.Keys.ToList() ?? new List<Data>();
-            var stringData = firstTableResultWithData?.StringData?.Keys.ToList() ?? new List<Data>();
-            return GetOrderedEnums(numericData.Concat(stringData)).Select(x => x.AsString()).ToList();
-        }
-
-        private static List<Data> GetOrderedEnums(IEnumerable<Data> data)
-        {
-            return data.OrderBy(d =>
-                {
-                    var index = DataUtils.GetFixedOrderedData().IndexOf(d);
-                    return index == -1 ? int.MaxValue : index;
-                }
-            ).ToList();
-        }
         private static IEnumerable<string> GetScenarioColumns(TableResults tableResults)
         {
             return tableResults.Keys.Select(x => x.scenario).ToHashSet();

@@ -22,6 +22,7 @@ namespace test_auto_db_perf
 
         
        //TODO further test relationship between cols,rows, orderedData
+       //TODO Mock Column orderer and test that in isolation
 
         [Test]
         public void CorrectOutputIsGiven_WithMessagesInScenario()
@@ -35,7 +36,7 @@ namespace test_auto_db_perf
             };
 
             var tableData = new TableData(columnRowData);
-            var csvOutput = new CsvOutput(new LoggerFactory());
+            var csvOutput = new CsvOutput(new LoggerFactory(), new ColumnOrderer());
             var result = csvOutput.OutputResults(tableData);
             var expected = "scenarios,scenario1,,scenario2\n" +
                            ",ExecutionTime,PlanningTime,ExecutionTime,PlanningTime\n" +
@@ -63,7 +64,7 @@ namespace test_auto_db_perf
                 }
             };
             var tableData = new TableData(columnRowData);
-            var csvOutput = new CsvOutput(new LoggerFactory());
+            var csvOutput = new CsvOutput(new LoggerFactory(), new ColumnOrderer());
             var result = csvOutput.OutputResults(tableData);
             var expected = "scenarios,scenario1,,,scenario2\n" +
                            ",ExecutionTime,PlanningTime,BiEngineMode,ExecutionTime,PlanningTime,BiEngineMode\n" +

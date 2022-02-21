@@ -5,31 +5,37 @@ using System.Text;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
 using AutoDbPerf.Utils;
+using Google.Apis.Bigquery.v2.Data;
 using Microsoft.Extensions.Logging;
 
 namespace AutoDbPerf.Implementations
 {
     public class CsvOutput : ITableOutput
     {
+        private readonly IColumnOrderer _columnOrderer;
         private readonly ILogger<CsvOutput> _logger;
 
-        public CsvOutput(ILoggerFactory loggerFactory)
+        public CsvOutput(ILoggerFactory loggerFactory, IColumnOrderer columnOrderer)
         {
+            _columnOrderer = columnOrderer;
             _logger = loggerFactory.CreateLogger<CsvOutput>();
         }
 
         public string OutputResults(TableData tableData)
         {
             _logger.LogInformation("Creating csv");
+            var orderedDataColumns = _columnOrderer.GetOrderedColumns(tableData);
             var numberOfScenarios = tableData.ScenarioColumns.Count();
-            var numberOfDataPoints = tableData.OrderedDataColumns.Count;
+            var numberOfDataPoints = orderedDataColumns.Count;
             var sb = new StringBuilder();
-            var scenarioColumnsRow = "scenarios," + tableData.ScenarioColumns.Aggregate((a, b) => a + ",".MultiplyBy(numberOfDataPoints) + b) + "\n";
+            var scenarioColumnsRow = "scenarios," +
+                                     tableData.ScenarioColumns.Aggregate((a, b) =>
+                                         a + ",".MultiplyBy(numberOfDataPoints) + b) + "\n";
             sb.Append(scenarioColumnsRow);
 
 
             var orderedDataColumnsRow =
-                $",{tableData.OrderedDataColumns.Aggregate((a, b) => $"{a},{b}").MultiplyBy(numberOfScenarios, ",")}\n"; // multiplied by number of scenarios
+                $",{orderedDataColumns.Aggregate((a, b) => $"{a},{b}").MultiplyBy(numberOfScenarios, ",")}\n"; // multiplied by number of scenarios
             sb.Append(orderedDataColumnsRow);
 
             tableData.Rows.Zip(GetDataFrom(tableData, numberOfDataPoints))
@@ -47,7 +53,7 @@ namespace AutoDbPerf.Implementations
                 .Select(row => tableData.ScenarioColumns.Select(column =>
                         tableData.HasDataFor(column, row)
                             ? tableData.GetTableResult(column, row)
-                            : new TableResult(null, null, true, true)) 
+                            : new TableResult(null, null, true, true))
                     .Select(tr => InterpretTableResult(tr, numberOfDataPoints)));
         }
 
@@ -61,11 +67,11 @@ namespace AutoDbPerf.Implementations
 
             var orderedData = DataUtils.GetFixedOrderedData();
             return orderedData
-                .Where(od => (tr.NumericData?.ContainsKey(od) ?? false) || (tr.StringData?.ContainsKey(od) ?? false))
+                .Where(d => (tr.NumericData?.ContainsKey(d) ?? false) || (tr.StringData?.ContainsKey(d) ?? false))
                 .Select(d =>
                     tr.NumericData.ContainsKey(d)
                         ? tr.NumericData[d].ToString(CultureInfo.InvariantCulture)
-                        : tr.StringData[d])
+                        : tr.StringData[d]) 
                 .Aggregate((a, b) => $"{a},{b}");
         }
     }
