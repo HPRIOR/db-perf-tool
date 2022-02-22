@@ -35,6 +35,7 @@ namespace AutoDbPerf
                     services.AddTransient<ITableOutput, CsvOutput>();
                     services.AddTransient<IDirectoryScanner, DirectoryScanner>();
                     services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
+                    services.AddTransient<IColumnOrderer, ColumnOrderer>();
                     services.AddSingleton<IContext, Context>();
                     services.AddLogging();
                     BuildWith(ctx.Configuration, services);
