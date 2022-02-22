@@ -11,12 +11,12 @@ namespace AutoDbPerf.Implementations
     public class QueryResultsAnalyser : IQueryResultsAnalyser
     {
         private readonly IContext _ctx;
-        private readonly IQueryResultInterpreter _queryResultInterpreter;
+        private readonly IQueryResultAggregator _queryResultAggregator;
 
-        public QueryResultsAnalyser(IContext ctx, IQueryResultInterpreter queryResultInterpreter)
+        public QueryResultsAnalyser(IContext ctx, IQueryResultAggregator queryResultAggregator)
         {
             _ctx = ctx;
-            _queryResultInterpreter = queryResultInterpreter;
+            _queryResultAggregator = queryResultAggregator;
         }
 
         public TableData GetTableData(IEnumerable<QueryResult> queryResults)
@@ -40,7 +40,7 @@ namespace AutoDbPerf.Implementations
                             return new TableResult(null, null, true);
 
                         var data = filteredQueryResults.Where(ResultHasData).ToList(); // will return min of 1 result
-                        return _queryResultInterpreter.GetTableDataFrom(data);
+                        return _queryResultAggregator.GetTableDataFrom(data);
                     });
         }
 

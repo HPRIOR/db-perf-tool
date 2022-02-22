@@ -64,22 +64,22 @@ namespace AutoDbPerf
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, PgCommandGenerator>();
-                    services.AddTransient<IQueryResultInterpreter, PgQueryResultInterpreter>();
+                    services.AddTransient<IQueryResultAggregator, PgQueryResultAggregator>();
                     return;
                 case "elastic":
                     services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();
-                    services.AddTransient<IQueryResultInterpreter, QueryResultInterpreter>();
+                    services.AddTransient<IQueryResultAggregator, BasicQueryResultAggregator>();
                     return;
                 case "bq":
                     services.AddTransient<IQueryExecutor, BigQueryExecutor>();
-                    services.AddTransient<IQueryResultInterpreter, BqQueryResultInterpreter>();
+                    services.AddTransient<IQueryResultAggregator, BqQueryResultAggregator>();
                     return;
                 case "clickhouse":
                     services.AddTransient<IQueryExecutor, ClickhouseQueryExecutor>();
-                    services.AddTransient<IQueryResultInterpreter, QueryResultInterpreter>();
+                    services.AddTransient<IQueryResultAggregator, BasicQueryResultAggregator>();
                     services.AddSingleton<HttpClient>();
                     return;
                 default:

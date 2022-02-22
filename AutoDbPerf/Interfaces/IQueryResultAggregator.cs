@@ -4,7 +4,7 @@ using AutoDbPerf.Records;
 
 namespace AutoDbPerf.Interfaces
 {
-    public interface IQueryResultInterpreter
+    public interface IQueryResultAggregator
     {
         TableResult GetTableDataFrom(IEnumerable<QueryResult> queryResult);
     }

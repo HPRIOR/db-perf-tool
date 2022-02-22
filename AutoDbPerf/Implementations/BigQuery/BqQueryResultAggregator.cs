@@ -6,7 +6,7 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations.BigQuery
 {
-    public class BqQueryResultInterpreter : IQueryResultInterpreter
+    public class BqQueryResultAggregator : IQueryResultAggregator
     {
         public TableResult GetTableDataFrom(IEnumerable<QueryResult> queryResult)
         {

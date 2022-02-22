@@ -7,7 +7,7 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations.Postgres
 {
-    public class PgQueryResultInterpreter : IQueryResultInterpreter
+    public class PgQueryResultAggregator : IQueryResultAggregator
     {
         public TableResult GetTableDataFrom(IEnumerable<QueryResult> queryResult)
         {

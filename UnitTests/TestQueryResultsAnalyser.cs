@@ -39,12 +39,12 @@ namespace test_auto_db_perf
             };
         }
 
-        private IQueryResultInterpreter _queryResultInterpreter;
+        private IQueryResultAggregator _queryResultAggregator;
 
         [SetUp]
         public void Setup()
         {
-            _queryResultInterpreter = Substitute.For<IQueryResultInterpreter>();
+            _queryResultAggregator = Substitute.For<IQueryResultAggregator>();
         }
 
 
@@ -58,10 +58,10 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, null),
             };
 
-            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultInterpreter);
+            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultAggregator);
 
             queryResultsAnalyser.GetTableData(queryResults);
-            _queryResultInterpreter.Received()
+            _queryResultAggregator.Received()
                 .GetTableDataFrom(
                     Arg.Is<List<QueryResult>>(x => x.Any(qr => !qr.HasProblem))
                 );
@@ -76,7 +76,7 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, null, true),
             };
 
-            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultInterpreter);
+            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultAggregator);
 
             var result = queryResultsAnalyser.GetTableData(queryResults);
             var tableResult = result.GetTableResult("scenario1", "query1");
@@ -94,10 +94,10 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, GetTestDictionary("second")),
             };
 
-            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultInterpreter);
+            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultAggregator);
 
             queryResultsAnalyser.GetTableData(queryResults);
-            _queryResultInterpreter.Received()
+            _queryResultAggregator.Received()
                 .GetTableDataFrom(
                     Arg.Is<List<QueryResult>>(x => x.All(qr =>
                         qr.StringData.ContainsKey(Data.BI_MODE) &&
@@ -115,10 +115,10 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, GetTestDictionary("second")),
             };
 
-            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultInterpreter);
+            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultAggregator);
 
             queryResultsAnalyser.GetTableData(queryResults);
-            _queryResultInterpreter.Received()
+            _queryResultAggregator.Received()
                 .GetTableDataFrom(
                     Arg.Is<List<QueryResult>>(x => x.Any(qr =>
                         qr.StringData.ContainsKey(Data.BI_MODE) &&
@@ -135,7 +135,7 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, GetTestDictionary("first"))
             };
 
-            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultInterpreter);
+            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultAggregator);
 
 
             var result = queryResultsAnalyser.GetTableData(queryResults);
@@ -159,10 +159,10 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, GetTestDictionary("accepted")),
             };
 
-            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultInterpreter);
+            var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultAggregator);
 
             queryResultsAnalyser.GetTableData(queryResults);
-            _queryResultInterpreter.Received()
+            _queryResultAggregator.Received()
                 .GetTableDataFrom(
                     Arg.Is<List<QueryResult>>(x => x.All(qr =>
                         qr.StringData.ContainsKey(Data.BI_MODE) &&

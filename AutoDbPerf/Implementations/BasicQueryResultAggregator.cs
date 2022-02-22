@@ -6,8 +6,7 @@ using AutoDbPerf.Utils;
 
 namespace AutoDbPerf.Implementations
 {
-    // rename to aggregator
-    public class QueryResultInterpreter : IQueryResultInterpreter
+    public class BasicQueryResultAggregator : IQueryResultAggregator
     {
         public TableResult GetTableDataFrom(IEnumerable<QueryResult> queryResult)
         {
