@@ -7,6 +7,7 @@ using AutoDbPerf.Utils;
 namespace AutoDbPerf.Implementations
 {
     using TableResults = Dictionary<(string scenario, string query), TableResult>;
+
     public class QueryResultsAnalyser : IQueryResultsAnalyser
     {
         private readonly IContext _ctx;
@@ -17,7 +18,7 @@ namespace AutoDbPerf.Implementations
             _ctx = ctx;
             _queryResultInterpreter = queryResultInterpreter;
         }
-        
+
         public TableData GetTableData(IEnumerable<QueryResult> queryResults)
         {
             return new TableData(GetCellResults(queryResults));
@@ -35,11 +36,8 @@ namespace AutoDbPerf.Implementations
                     {
                         var filteredQueryResults = ApplyIgnoreFirstRule(queryResults).ToList();
 
-                        if (ResultsAreAllBad(filteredQueryResults))
-                        {
-                            var message = GetErrorMessageFromResults(filteredQueryResults);
+                        if (AllResultsHaveProblems(filteredQueryResults))
                             return new TableResult(null, null, true);
-                        }
 
                         var data = filteredQueryResults.Where(ResultHasData).ToList(); // will return min of 1 result
                         return _queryResultInterpreter.GetTableDataFrom(data);
@@ -56,7 +54,7 @@ namespace AutoDbPerf.Implementations
                 : queryResults;
         }
 
-        private bool ResultsAreAllBad(IEnumerable<QueryResult> results)
+        private bool AllResultsHaveProblems(IEnumerable<QueryResult> results)
         {
             return results.All(result => result.HasProblem);
         }
@@ -64,14 +62,6 @@ namespace AutoDbPerf.Implementations
         private bool ResultHasData(QueryResult result)
         {
             return !result.HasProblem;
-        }
-
-        private string GetErrorMessageFromResults(IEnumerable<QueryResult> results)
-        {
-            return results
-                .Select(r => r.Problem)
-                .ToHashSet()
-                .FlattenToCommaList();
         }
     }
 }
