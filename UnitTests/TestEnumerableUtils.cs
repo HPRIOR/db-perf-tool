@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Records;
@@ -185,7 +186,7 @@ namespace test_auto_db_perf
                 new Dictionary<Data, float> { { Data.PLANNING_TIME, 10f }, { Data.EXECUTION_TIME, 10f } }, null);
             var input = new List<QueryResult>
             {
-                new( "test-query-1", "test-scenario-1", null, null, true),
+                new("test-query-1", "test-scenario-1", null, null, true),
                 expectedOne,
                 expectedTwo
             };
@@ -195,6 +196,27 @@ namespace test_auto_db_perf
             };
 
             Assert.That(input.AllAfterFirstSuccessful(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void StdDev_WillReturnCorrectResult()
+        {
+            var sut = new List<float> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }.StdDev();
+            Assert.That(sut, Is.EqualTo((float)Math.Round(2.872281323269, 2)));
+        }
+
+        [Test]
+        public void StdDev_WillReturnCorrectResult_WithSingleItem()
+        {
+            var sut = new List<float> { 1 }.StdDev();
+            Assert.That(sut, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void StdDev_WillReturnCorrectResult_WithNoItems()
+        {
+            var sut = new List<float> { 0 }.StdDev();
+            Assert.That(sut, Is.EqualTo(0));
         }
     }
 }
