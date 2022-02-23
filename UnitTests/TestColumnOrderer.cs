@@ -55,9 +55,9 @@ namespace test_auto_db_perf
             var tableResults =
                 GetTableResult(new List<Data> { Data.PLANNING_TIME, Data.EXECUTION_TIME, Data.BYTES_BILLED }, null);
             var sut = _columnOrderer.GetOrderedColumns(new TableData(tableResults));
-            Assert.That(sut[0] == Data.EXECUTION_TIME.AsString());
-            Assert.That(sut[1] == Data.PLANNING_TIME.AsString());
-            Assert.That(sut[2] == Data.BYTES_BILLED.AsString());
+            Assert.That(sut[0], Is.EqualTo(Data.EXECUTION_TIME.AsString()));
+            Assert.That(sut[1], Is.EqualTo(Data.PLANNING_TIME.AsString()));
+            Assert.That(sut[2], Is.EqualTo(Data.BYTES_BILLED.AsString()));
         }
 
         [Test]
@@ -82,9 +82,9 @@ namespace test_auto_db_perf
             var tableResults =
                 GetTableResult(null, new List<Data> { Data.BI_MODE, Data.BYTES_BILLED, Data.PLANNING_TIME });
             var sut = _columnOrderer.GetOrderedColumns(new TableData(tableResults));
-            Assert.That(sut[0] == Data.PLANNING_TIME.AsString());
-            Assert.That(sut[1] == Data.BYTES_BILLED.AsString());
-            Assert.That(sut[2] == Data.BI_MODE.AsString());
+            Assert.That(sut[0], Is.EqualTo(Data.PLANNING_TIME.AsString()));
+            Assert.That(sut[1], Is.EqualTo(Data.BYTES_BILLED.AsString()));
+            Assert.That(sut[2], Is.EqualTo(Data.BI_MODE.AsString()));
         }
 
         [Test]
