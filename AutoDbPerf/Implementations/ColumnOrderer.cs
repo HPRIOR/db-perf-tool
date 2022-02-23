@@ -17,7 +17,7 @@ namespace AutoDbPerf.Implementations
 
             var (scenario, query) = ForFirstResultWithData(tableData, columns, rows);
 
-            if (scenario == "" || query == "")
+            if (string.IsNullOrEmpty(scenario) || string.IsNullOrEmpty(query))
                 return new List<string>();
 
             var tableResult = tableData.GetTableResult(scenario, query);
@@ -27,6 +27,7 @@ namespace AutoDbPerf.Implementations
 
             var data = numericData.Concat(stringData);
             return GetOrderedEnums(data).Select(d => d.AsString()).ToList();
+        }
 
         private (string col, string row) ForFirstResultWithData(TableData tableData,
             IEnumerable<string> columns, IEnumerable<string> rows)
