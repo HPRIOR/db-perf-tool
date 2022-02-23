@@ -22,6 +22,9 @@ namespace IntegrationTests
                 services.AddTransient<ITableOutput, CsvOutput>();
                 services.AddTransient<IQueryExecutor, BigQueryExecutor>();
                 services.AddTransient<IDirectoryScanner, DirectoryScanner>();
+                services.AddTransient<IColumnOrderer, ColumnOrderer>();
+                services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
+                services.AddTransient<IQueryResultAggregator, BqQueryResultAggregator>();
                 services.AddSingleton<IContext>(new Context());
             }).Build();
             _benchmarker = ActivatorUtilities.CreateInstance<Benchmarker>(host.Services);

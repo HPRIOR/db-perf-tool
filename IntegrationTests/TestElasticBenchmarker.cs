@@ -24,6 +24,9 @@ namespace IntegrationTests
                 services.AddTransient<ICommandExecutor, CommandExecutor>();
                 services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();
                 services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
+                services.AddTransient<IColumnOrderer, ColumnOrderer>();
+                services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
+                services.AddTransient<IQueryResultAggregator, BasicQueryResultAggregator>();
                 services.AddSingleton<IContext>(new Context());
             }).Build();
             _benchmarker = ActivatorUtilities.CreateInstance<Benchmarker>(host.Services);

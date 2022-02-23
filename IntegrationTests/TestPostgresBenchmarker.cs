@@ -23,6 +23,9 @@ namespace IntegrationTests
                 services.AddTransient<ICommandGenerator, PgCommandGenerator>();
                 services.AddTransient<ICommandGenerator, PgCommandGenerator>();
                 services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
+                services.AddTransient<IColumnOrderer, ColumnOrderer>();
+                services.AddTransient<IQueryResultAggregator, PgQueryResultAggregator>();
+                services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
                 services.AddSingleton<IContext>(new Context());
             }).Build();
             _benchmarker = ActivatorUtilities.CreateInstance<Benchmarker>(host.Services);
