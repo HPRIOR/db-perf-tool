@@ -36,7 +36,10 @@ namespace test_auto_db_perf
             var result = resultAggregator.GetTableDataFrom(queryResults);
 
             Assert.That(result.NumericData.Keys.ToList(),
-                Is.EquivalentTo(new List<Data> { Data.AVG_EXECUTION_TIME, Data.EXECUTION_STD_DEV }));
+                Is.EquivalentTo(new List<Data>
+                {
+                    Data.AVG_EXECUTION_TIME, Data.EXECUTION_STD_DEV, Data.MIN_EXECUTION_TIME, Data.MAX_EXECUTION_TIME
+                }));
         }
 
         [Test]
@@ -55,7 +58,8 @@ namespace test_auto_db_perf
             Assert.That(result.NumericData.Keys.ToList(),
                 Is.EquivalentTo(new List<Data>
                 {
-                    Data.AVG_EXECUTION_TIME, Data.EXECUTION_STD_DEV, Data.AVG_PLANNING_TIME, Data.PLANNING_STD_DEV
+                    Data.AVG_EXECUTION_TIME, Data.EXECUTION_STD_DEV, Data.AVG_PLANNING_TIME, Data.PLANNING_STD_DEV,
+                    Data.MIN_PLANNING_TIME, Data.MAX_PLANNING_TIME, Data.MIN_EXECUTION_TIME, Data.MAX_EXECUTION_TIME
                 }));
         }
 
@@ -86,10 +90,12 @@ namespace test_auto_db_perf
                 {
                     Data.AVG_BYTES_BILLED,
                     Data.AVG_BYTES_PROCESSED,
-                    Data.AVG_EXECUTION_TIME, 
+                    Data.AVG_EXECUTION_TIME,
                     Data.BYTES_BILLED_STD_DEV,
                     Data.BYTES_PROCESSED_STD_DEV,
                     Data.EXECUTION_STD_DEV,
+                    Data.MIN_EXECUTION_TIME,
+                    Data.MAX_EXECUTION_TIME,
                 }));
 
             Assert.That(result.StringData.Keys.ToList(),

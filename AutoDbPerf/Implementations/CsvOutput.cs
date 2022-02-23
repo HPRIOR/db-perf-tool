@@ -48,8 +48,8 @@ namespace AutoDbPerf.Implementations
                 .Select(x => (rowId: x.First, rowData: x.Second))
                 .Select(row => $"{row.rowId},{row.rowData.Aggregate((a, b) => a + "," + b)}\n")
                 .OrderBy(x => x)
-                .Aggregate((a,b) => $"{a}{b}");
-            
+                .Aggregate((a, b) => $"{a}{b}");
+
 
             sb.Append(rows);
 
