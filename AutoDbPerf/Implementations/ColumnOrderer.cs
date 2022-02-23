@@ -10,9 +10,6 @@ namespace AutoDbPerf.Implementations
 {
     public class ColumnOrderer : IColumnOrderer
     {
-        private bool TableResultHasData(TableResult tableResult) =>
-            tableResult.NumericData != null || tableResult.StringData != null;
-
         public List<string> GetOrderedColumns(TableData tableData)
         {
             var columns = tableData.ScenarioColumns;
@@ -39,6 +36,9 @@ namespace AutoDbPerf.Implementations
                 .FirstOrDefault(t => tableData.HasDataFor(t.col, t.row) &&
                                      TableResultHasData(tableData.GetTableResult(t.col, t.row)));
         }
+
+        private bool TableResultHasData(TableResult tableResult) =>
+            tableResult.NumericData != null || tableResult.StringData != null;
 
         private static List<Data> GetOrderedEnums(IEnumerable<Data> data)
         {
