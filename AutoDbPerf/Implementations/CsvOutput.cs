@@ -24,9 +24,15 @@ namespace AutoDbPerf.Implementations
         public string OutputResults(TableData tableData)
         {
             _logger.LogInformation("Creating csv");
-            var orderedDataColumns = _columnOrderer.GetOrderedColumns(tableData);
+            var initOrderedDataColumns = _columnOrderer.GetOrderedColumns(tableData);
+            var orderedDataColumns = initOrderedDataColumns.Count == 0
+                ? new List<string> { "Error" }
+                : initOrderedDataColumns;
+            
+            var numberOfDataPoints = orderedDataColumns.Count == 0 ? 1 : orderedDataColumns.Count;
             var numberOfScenarios = tableData.ScenarioColumns.Count();
-            var numberOfDataPoints = orderedDataColumns.Count;
+
+
             var sb = new StringBuilder();
             var scenarioColumnsRow = "scenarios," +
                                      tableData.ScenarioColumns.Aggregate((a, b) =>
