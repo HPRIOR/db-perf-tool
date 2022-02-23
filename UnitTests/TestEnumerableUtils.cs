@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using AutoDbPerf.Implementations;
 using AutoDbPerf.Records;
 using AutoDbPerf.Utils;
-using NSubstitute.Core;
 using NUnit.Framework;
 
 namespace test_auto_db_perf
@@ -128,12 +128,13 @@ namespace test_auto_db_perf
         public void AllAfterFirstSuccessful_WillIgnoreAll_IfOnlyLastIsSuccessful()
         {
             var savedQueryResult =
-                new QueryResult(1, 1, "test-query", "test-scenario");
+                new QueryResult("test-query", "test-scenario", new Dictionary<Data, float>(),
+                    new Dictionary<Data, string>());
 
             var input = new List<QueryResult>
             {
-                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
-                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
+                new("test-query-1", "test-scenario-1", null, null, true),
+                new("test-query-2", "test-scenario-2", null, null, true),
                 savedQueryResult
             };
             var expected = new List<QueryResult>();
@@ -145,13 +146,15 @@ namespace test_auto_db_perf
         public void AllAfterFirstSuccessful_WillIgnoreFirstThreeOutOfFour_IfThirdSuccessful()
         {
             var savedQueryResult =
-                new QueryResult(1, 1, "test-query", "test-scenario");
+                new QueryResult("test-query", "test-scenario", new Dictionary<Data, float>(),
+                    new Dictionary<Data, string>());
 
             var input = new List<QueryResult>
             {
-                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
-                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
-                new(10, 10, "test-query-2", "test-scenario-2"),
+                new("test-query-1", "test-scenario-1", null, null, true),
+                new("test-query-2", "test-scenario-2", null, null, true),
+                new("test-query-2", "test-scenario-2",
+                    new Dictionary<Data, float>() { { Data.PLANNING_TIME, 10f }, { Data.EXECUTION_TIME, 10f } }, null),
                 savedQueryResult
             };
             var expected = new List<QueryResult> { savedQueryResult };
@@ -164,9 +167,9 @@ namespace test_auto_db_perf
         {
             var input = new List<QueryResult>
             {
-                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
-                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
-                new(0, 0, "test-query-2", "test-scenario-2", "some problem 2"),
+                new("test-query-1", "test-scenario-1", null, null, true),
+                new("test-query-2", "test-scenario-2", null, null, true),
+                new("test-query-2", "test-scenario-2", null, null, true),
             };
             var expected = new List<QueryResult>();
 
@@ -176,11 +179,13 @@ namespace test_auto_db_perf
         [Test]
         public void AllAfterFirstSuccessful_WillIgnoreFirstSuccessfulTest_AfterOneFailure()
         {
-            var expectedOne = new QueryResult(1, 1, "test", "test");
-            var expectedTwo = new QueryResult(1, 1, "test", "test");
+            var expectedOne = new QueryResult("test", "test",
+                new Dictionary<Data, float> { { Data.PLANNING_TIME, 10f }, { Data.EXECUTION_TIME, 10f } }, null);
+            var expectedTwo = new QueryResult("test", "test",
+                new Dictionary<Data, float> { { Data.PLANNING_TIME, 10f }, { Data.EXECUTION_TIME, 10f } }, null);
             var input = new List<QueryResult>
             {
-                new(0, 0, "test-query-1", "test-scenario-1", "some problem 1"),
+                new( "test-query-1", "test-scenario-1", null, null, true),
                 expectedOne,
                 expectedTwo
             };

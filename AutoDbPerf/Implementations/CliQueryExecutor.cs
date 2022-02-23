@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
@@ -24,7 +25,7 @@ namespace AutoDbPerf.Implementations
         {
             var queryName = queryPath.GetQueryNameFromPath();
             _logger.LogInformation("Executing : {}-{}", scenario, queryName);
-            
+
             var task = _commandExecutor.ExecuteCommand(queryPath, _queryInterpreter.InitialScanPredicate());
             if (task.Wait(timeout))
             {
@@ -33,18 +34,23 @@ namespace AutoDbPerf.Implementations
                 if (interpretedResult.IsError)
                 {
                     _logger.LogError("Process errored: {}", interpretedResult.ErrorMessage);
-                    return new QueryResult(0, 0, queryName, scenario, "Error occured - see logs");
+                    return new QueryResult(scenario, queryName, null, null, true, "Error occured - see logs");
                 }
 
                 _logger.LogInformation("{}-{} - Execution time: {}, Planning time: {}", scenario, queryName,
                     interpretedResult.ExecutionTime,
                     interpretedResult.PlanningTime);
-                return new QueryResult(interpretedResult.PlanningTime, interpretedResult.ExecutionTime, queryName,
-                    scenario);
+
+                var data = new Dictionary<Data, float>
+                {
+                    { Data.PLANNING_TIME, interpretedResult.PlanningTime },
+                    { Data.EXECUTION_TIME, interpretedResult.ExecutionTime }
+                };
+                return new QueryResult(scenario, queryName, data, null);
             }
 
             _logger.LogWarning("Command timout");
-            return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
+            return new QueryResult(scenario, queryName, null, null, true, $"Timeout at {timeout}ms");
         }
     }
 }

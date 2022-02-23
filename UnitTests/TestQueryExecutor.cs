@@ -85,22 +85,22 @@ namespace test_auto_db_perf
         public void WillGetCorrectPlanningTime()
         {
             var sut = _queryExecutor?.ExecuteQuery("planning", "scenario", 100);
-            Assert.That(sut?.PlanningTime, Is.EqualTo(10));
+            Assert.That(sut?.NumData[Data.PLANNING_TIME], Is.EqualTo(10));
         }
 
         [Test]
         public void WillGetCorrectExecutionTime()
         {
             var sut = _queryExecutor?.ExecuteQuery("execution", "scenario", 100);
-            Assert.That(sut?.ExecutionTime, Is.EqualTo(10));
+            Assert.That(sut?.NumData[Data.EXECUTION_TIME], Is.EqualTo(10));
         }
 
         [Test]
         public void WillReturnZeroTimes_WhenNoNumbersInResultString()
         {
             var sut = _queryExecutor?.ExecuteQuery("no-num", "scenario", 100);
-            Assert.That(sut?.ExecutionTime, Is.EqualTo(0));
-            Assert.That(sut?.PlanningTime, Is.EqualTo(0));
+            Assert.That(sut?.NumData[Data.EXECUTION_TIME], Is.EqualTo(0));
+            Assert.That(sut?.NumData[Data.PLANNING_TIME], Is.EqualTo(0));
         }
 
         [Test]

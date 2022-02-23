@@ -14,7 +14,7 @@ namespace IntegrationTests
         public void Setup()
         {
             var ctx = new Context();
-            _commandExecutor = new CommandExecutor(new PostgresCommandGenerator(ctx));
+            _commandExecutor = new CommandExecutor(new PgCommandGenerator(ctx));
         }
 
         private class Context : IContext

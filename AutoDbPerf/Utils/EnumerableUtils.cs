@@ -60,7 +60,7 @@ namespace AutoDbPerf.Utils
                     Enumerable
                         .Range(0, qrsList.Count)
                         .Zip(qrsList)
-                        .First(tup => tup.Second.Problem.Length == 0)
+                        .First(tup => !tup.Second.HasProblem)
                         .First;
                 return qrsList.Skip(upToFirstResult + 1);
             }
@@ -68,6 +68,16 @@ namespace AutoDbPerf.Utils
             {
                 return new List<QueryResult>();
             }
+        }
+
+        public static float StdDev(this IEnumerable<float> xs)
+        {
+            var xsList = xs.ToList();
+            var avg = xsList.Average();
+            return (float)Math.Round(
+                Math.Sqrt(
+                    xsList.Select(x => Math.Pow(x - avg, 2)).Average()
+                ), 2);
         }
     }
 }

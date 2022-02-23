@@ -3,8 +3,9 @@ using AutoDbPerf.Records;
 
 namespace AutoDbPerf.Interfaces
 {
-    public interface IResultAnalyser
+    public interface IColumnOrderer
     {
-        TableData AnalyseResults(IEnumerable<QueryResult> results);
+        List<string> GetOrderedColumns(TableData tableData);
+
     }
 }

@@ -10,56 +10,48 @@ namespace AutoDbPerf.Implementations
 {
     public class QueryManager : IQueryManager
     {
-        private readonly IDirectoryScanner _directoryScanner;
-        private readonly ILogger<QueryManager> _logger;
         private readonly IContext _context;
         private readonly IQueryExecutor _queryExecutor;
 
         public QueryManager(
-            ILoggerFactory loggerFactory,
             IContext context,
-            IQueryExecutor queryExecutor,
-            IDirectoryScanner directoryScanner
+            IQueryExecutor queryExecutor
         )
         {
-            _logger = loggerFactory.CreateLogger<QueryManager>();
             _context = context;
             _queryExecutor = queryExecutor;
-            _directoryScanner = directoryScanner;
         }
 
         private record ScenarioQuery(string Scenario, string Query);
 
-        //TODO refactor me: Directory scanner should just return QueryPaths instead of Scenario, IEnumerable<Query>. 
-        // It can then also be responsible for ordering them
-        public IEnumerable<QueryResult> GetQueryResult(string queryPath,
-            int avgPrecision, int timeout = 5000)
+        public IEnumerable<QueryResult> GetQueryResults(IEnumerable<QueryInfo> queryInfo, int avgPrecision,
+            int timeout = 5000)
         {
             if (avgPrecision <= 0)
                 throw new ArgumentException("Average precision must be greater than 0");
 
-            _logger.LogInformation("Scanning directories");
-            var scenarioQueryPaths = _directoryScanner.ScanDirectories(queryPath).ToArray();
-
             var multipliedScenarioQueries =
-                scenarioQueryPaths.SelectMany(scenarioQueryPath => Enumerable.Range(0, avgPrecision).SelectMany(_ =>
-                    scenarioQueryPath.Queries.OrderBy(x => x).Select(query => new ScenarioQuery
-                        (scenarioQueryPath.Scenario, query))));
+                queryInfo
+                    .SelectMany(scenarioQueryPath => Enumerable.Range(0, avgPrecision)
+                        .SelectMany(avgGroup => scenarioQueryPath
+                            .Queries
+                            .OrderBy(x => x)
+                            .Select(query => (new ScenarioQuery(scenarioQueryPath.Scenario, query), avgGroup))));
 
-            return GetOrderedQueries(multipliedScenarioQueries).Select(sqp =>
-                _queryExecutor.ExecuteQuery(sqp.Query, sqp.Scenario, timeout));
+            return GetOrderedQueries(multipliedScenarioQueries)
+                .Select(sqp => _queryExecutor.ExecuteQuery(sqp.Query, sqp.Scenario, timeout));
         }
 
-        private IEnumerable<ScenarioQuery> GetOrderedQueries(IEnumerable<ScenarioQuery> scenarioQueries)
+
+        private IEnumerable<ScenarioQuery> GetOrderedQueries(IEnumerable<(ScenarioQuery, int)> scenarioQueries)
         {
             var orderContext = _context.GetEnv(ContextKey.ORDER);
             return orderContext switch
             {
-                "rr" => scenarioQueries.OrderBy(sq => sq.Scenario),
-                "seq" => scenarioQueries.OrderBy(sq => sq.Scenario).ThenBy(sq => sq.Query),
-                _ => scenarioQueries.OrderBy(sq => sq.Scenario)
+                "rr" => scenarioQueries.GroupBy(tuple => tuple.Item2).SelectMany(group => group.Select(x => x.Item1)),
+                "seq" => scenarioQueries.OrderBy(sq => sq.Item1.Scenario).ThenBy(sq => sq.Item1.Query).Select(x => x.Item1),
+                _ => scenarioQueries.OrderBy(sq => sq.Item1.Scenario).Select(x => x.Item1)
             };
-            
         }
     }
 }
