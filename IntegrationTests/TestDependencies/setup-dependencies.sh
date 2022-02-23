@@ -22,7 +22,7 @@ while true; do
     echo "Connection found"
     echo "Adding data to clickhouse"
     $CH -q "create database test_db ENGINE = Memory"
-    $CH client -q "create table test_db.test_table(x String) Engine = Memory AS SELECT 1"
+    $CH -q "create table test_db.test_table(x String) Engine = Memory AS SELECT 1"
     break
   fi
 done
