@@ -51,16 +51,17 @@ namespace IntegrationTests
 
 
         [Test]
-        public void ProducesTheCorrectOutPutWithNonApplicableCells()
+        public void ProducesTheCorrectOutput()
         {
             var sqlPath = "Resources/TestBenchmark";
             var avgPrecision = 5;
             var timeout = 5000;
             var result = _benchmarker.GetBenchmarks(sqlPath, avgPrecision, timeout);
-            var expected = "scenarios,scenario1,scenario2\n" +
-                           "query1,Planning: 0.1 SD: 0 Execution: 0.1 SD: 0 Total: 0.2,Planning: 0.4 SD: 0 Execution: 0.4 SD: 0 Total: 0.8\n" +
-                           "query2,Planning: 0.2 SD: 0 Execution: 0.2 SD: 0 Total: 0.4,Planning: 0.5 SD: 0 Execution: 0.5 SD: 0 Total: 1\n" +
-                           "query3,Planning: 0.3 SD: 0 Execution: 0.3 SD: 0 Total: 0.6,Planning: 0.6 SD: 0 Execution: 0.6 SD: 0 Total: 1.2\n";
+            var expected = "scenarios,scenario1,,,,scenario2\n" +
+                           ",AvgExecutionTime,StdDev,AvgPlanningTime,StdDev,AvgExecutionTime,StdDev,AvgPlanningTime,StdDev\n" +
+                           "query1,0.1,0,0.1,0,0.4,0,0.4,0\n" +
+                           "query2,0.2,0,0.2,0,0.5,0,0.5,0\n" +
+                           "query3,0.3,0,0.3,0,0.6,0,0.6,0\n";
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -69,15 +70,17 @@ namespace IntegrationTests
         public void CompletesWithNoExplainAnalyse()
         {
             var sqlPath = "Resources/NoExplainAnalyse";
+            var errorMessage = "Error - see logs";
             var avgPrecision = 5;
             var timeout = 5000;
             var result = _benchmarker.GetBenchmarks(sqlPath, avgPrecision, timeout);
             var expected =
                 "scenarios,scenario1,scenario2\n" +
-                "query1,N/A,N/A\n" +
-                "query2,N/A,N/A\n" +
-                "query3,N/A,N/A\n" +
-                "query4,N/A,N/A\n";
+                ",Error,Error\n" +
+                $"query1,{errorMessage},N/A\n" +
+                $"query2,{errorMessage},N/A\n" +
+                $"query3,N/A,{errorMessage}\n" +
+                $"query4,N/A,{errorMessage}\n";
             Assert.That(result, Is.EqualTo(expected));
         }
     }
