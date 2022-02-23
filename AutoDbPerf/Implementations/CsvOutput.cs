@@ -28,7 +28,7 @@ namespace AutoDbPerf.Implementations
             var orderedDataColumns = initOrderedDataColumns.Count == 0
                 ? new List<string> { "Error" }
                 : initOrderedDataColumns;
-            
+
             var numberOfDataPoints = orderedDataColumns.Count == 0 ? 1 : orderedDataColumns.Count;
             var numberOfScenarios = tableData.ScenarioColumns.Count();
 
@@ -44,11 +44,15 @@ namespace AutoDbPerf.Implementations
                 $",{orderedDataColumns.Aggregate((a, b) => $"{a},{b}").MultiplyBy(numberOfScenarios, ",")}\n"; // multiplied by number of scenarios
             sb.Append(orderedDataColumnsRow);
 
-            tableData.Rows.Zip(GetDataFrom(tableData, numberOfDataPoints))
+            var rows = tableData.Rows.Zip(GetDataFrom(tableData, numberOfDataPoints))
                 .Select(x => (rowId: x.First, rowData: x.Second))
-                .ToList()
-                .ForEach(row =>
-                    sb.Append($"{row.rowId},{row.rowData.Aggregate((a, b) => a + "," + b)}\n"));
+                .Select(row => $"{row.rowId},{row.rowData.Aggregate((a, b) => a + "," + b)}\n")
+                .OrderBy(x => x)
+                .Aggregate((a,b) => $"{a}{b}");
+            
+
+            sb.Append(rows);
+
 
             return sb.ToString();
         }
@@ -77,7 +81,7 @@ namespace AutoDbPerf.Implementations
                 .Select(d =>
                     tr.NumericData.ContainsKey(d)
                         ? tr.NumericData[d].ToString(CultureInfo.InvariantCulture)
-                        : tr.StringData[d]) 
+                        : tr.StringData[d])
                 .Aggregate((a, b) => $"{a},{b}");
         }
     }
