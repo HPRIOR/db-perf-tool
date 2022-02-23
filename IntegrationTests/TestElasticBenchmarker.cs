@@ -63,7 +63,7 @@ namespace IntegrationTests
              var avgPrecision = 5;
              var timeout = 5000;
              var result = _benchmarker.GetBenchmarks(queryPath, avgPrecision, timeout);
-             var expected = "scenarios,scenario1,scenario2\nquery1,Error - see logs,Error - see logs\nquery2,Error - see logs,Error - see logs\n";
+             var expected = "scenarios,scenario1,scenario2\n,Error,Error\nquery1,Error - see logs,Error - see logs\nquery2,Error - see logs,Error - see logs\n";
              Assert.That(result, Is.EqualTo(expected));
         }
     }
