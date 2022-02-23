@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoDbPerf.Implementations;
@@ -50,13 +49,13 @@ namespace test_auto_db_perf
             var queryInterpreter = Substitute.For<IQueryInterpreter>();
             queryInterpreter.InitialScanPredicate().Returns(InitialScanPredicate);
             queryInterpreter.InterpretCommandResult(errorCommandResult)
-                .Returns(new InterpretedCommand(true , 0, 0,"Error occured - see logs"));
+                .Returns(new InterpretedCommand(true, 0, 0, "Error occured - see logs"));
             queryInterpreter.InterpretCommandResult(planningCommandResult)
                 .Returns(new InterpretedCommand(false, 0, 10));
             queryInterpreter.InterpretCommandResult(planningCommandResult)
                 .Returns(new InterpretedCommand(false, 0, 10));
             queryInterpreter.InterpretCommandResult(executionCommandResult)
-                .Returns(new InterpretedCommand(false , 10));
+                .Returns(new InterpretedCommand(false, 10));
             queryInterpreter.InterpretCommandResult(executionNoTimeResult)
                 .Returns(new InterpretedCommand(false));
 

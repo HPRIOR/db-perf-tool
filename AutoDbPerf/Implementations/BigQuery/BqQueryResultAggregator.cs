@@ -20,7 +20,7 @@ namespace AutoDbPerf.Implementations.BigQuery
             var executionStdDev = executionTime.StdDev();
             var minExecutionTime = executionTime.Min();
             var maxExecutionTime = executionTime.Max();
-            
+
 
             var avgBytesProcessed = bytesProcessed.Average();
             var bytesProcessesStdDev = bytesProcessed.StdDev();
@@ -40,7 +40,7 @@ namespace AutoDbPerf.Implementations.BigQuery
                 { Data.BYTES_BILLED_STD_DEV, bytesBilledStdDev }
             };
 
-            var strData = new Dictionary<Data, string>()
+            var strData = new Dictionary<Data, string>
             {
                 { Data.BI_MODE, ParseMultipleBiEngineResults(qrList.Select(x => x.StringData[Data.BI_MODE])) }
             };

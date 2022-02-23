@@ -34,9 +34,7 @@ namespace AutoDbPerf.Implementations.Elastic
             return cmdResult.Stdout.Any(str => str.Contains(ErrorIdentifier));
         }
 
-        private bool StdErrContainsRealErrorMessage(CommandResult cmdResult)
-        {
-            return cmdResult.Stderr.Any() && !cmdResult.Stderr.First().Contains("% Total");
-        }
+        private bool StdErrContainsRealErrorMessage(CommandResult cmdResult) =>
+            cmdResult.Stderr.Any() && !cmdResult.Stderr.First().Contains("% Total");
     }
 }

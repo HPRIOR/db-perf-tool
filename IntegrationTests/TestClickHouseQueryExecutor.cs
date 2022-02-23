@@ -43,26 +43,26 @@ namespace IntegrationTests
             var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 5000);
             Assert.That(sut.NumData[Data.EXECUTION_TIME], Is.GreaterThan(0));
         }
+
         [Test]
         public void WillReturnError_WithBadCommand()
         {
             var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/error.sql", "test", 5000);
             Assert.That(sut.Problem, Is.Not.Empty);
         }
-        
+
         [Test]
         public void WillTimeout()
         {
             var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/query1.sql", "test", 0);
             Assert.That(sut.Problem, Does.Contain("Timeout at"));
         }
-        
+
         [Test]
         public void WillHandleMultiLineQuery()
         {
             var sut = _queryExecutor.ExecuteQuery("Resources/clickhouse/scenario1/multiline.sql", "test", 5000);
             Assert.That(sut.Problem, Is.Empty);
         }
-        
     }
 }

@@ -1,10 +1,7 @@
-using System;
-using System.Net.Mime;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Implementations.Elastic;
 using AutoDbPerf.Implementations.Exceptions;
 using AutoDbPerf.Interfaces;
-using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
 
 namespace IntegrationTests
@@ -12,7 +9,8 @@ namespace IntegrationTests
     [TestFixture]
     public class TestElasticCommandGenerator
     {
-        private ICommandGenerator GetElasticCommandGenerator(string elasticIndex = "", string indexV = "", string host = "localhost") =>
+        private ICommandGenerator GetElasticCommandGenerator(string elasticIndex = "", string indexV = "",
+            string host = "localhost") =>
             new ElasticCommandGenerator(new Context(elasticIndex, indexV, host));
 
 
@@ -88,7 +86,7 @@ namespace IntegrationTests
         [Test]
         public void WillUseHostProvided()
         {
-            var elasticCommandGenerator = GetElasticCommandGenerator(elasticIndex:"test_index", host: "test_host" );
+            var elasticCommandGenerator = GetElasticCommandGenerator("test_index", host: "test_host");
             var sut = elasticCommandGenerator.GenerateCommand("Resources/elastic/baseline/query1.json");
 
             var expected =

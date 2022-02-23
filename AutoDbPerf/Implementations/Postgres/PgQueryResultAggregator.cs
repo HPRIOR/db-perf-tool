@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoDbPerf.Interfaces;
@@ -35,7 +34,7 @@ namespace AutoDbPerf.Implementations.Postgres
                 { Data.AVG_EXECUTION_TIME, averageExecutionTime },
                 { Data.EXECUTION_STD_DEV, executionStdDev },
                 { Data.MIN_EXECUTION_TIME, minExecutionTime },
-                { Data.MAX_EXECUTION_TIME, maxExecutionTime },
+                { Data.MAX_EXECUTION_TIME, maxExecutionTime }
             };
 
             return new TableResult(numData, null);

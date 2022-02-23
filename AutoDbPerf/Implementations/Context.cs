@@ -39,13 +39,13 @@ namespace AutoDbPerf.Implementations
                 _ => throw new ArgumentOutOfRangeException(nameof(contextKey), contextKey, null)
             };
         }
-        
-        private string GetAvgPrecision() 
+
+        private string GetAvgPrecision()
         {
             if (_config["IGNOREFIRST"] == "true")
             {
                 int result;
-                bool success  = int.TryParse(_config["AVGPRECISION"], out result);
+                var success = int.TryParse(_config["AVGPRECISION"], out result);
                 if (success)
                     return (result + 1).ToString();
             }

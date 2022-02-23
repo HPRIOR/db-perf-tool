@@ -19,10 +19,8 @@ namespace AutoDbPerf.Implementations
             _queryResultAggregator = queryResultAggregator;
         }
 
-        public TableData GetTableData(IEnumerable<QueryResult> queryResults)
-        {
-            return new TableData(GetCellResults(queryResults));
-        }
+        public TableData GetTableData(IEnumerable<QueryResult> queryResults) =>
+            new TableData(GetCellResults(queryResults));
 
         private TableResults GetCellResults(
             IEnumerable<QueryResult> results)
@@ -59,9 +57,6 @@ namespace AutoDbPerf.Implementations
             return results.All(result => result.HasProblem);
         }
 
-        private bool ResultHasData(QueryResult result)
-        {
-            return !result.HasProblem;
-        }
+        private bool ResultHasData(QueryResult result) => !result.HasProblem;
     }
 }

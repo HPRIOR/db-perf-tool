@@ -24,9 +24,9 @@ namespace AutoDbPerf.Utils
             Data.BYTES_PROCESSED,
             Data.AVG_BYTES_PROCESSED,
             Data.BYTES_PROCESSED_STD_DEV,
-            Data.BI_MODE,
+            Data.BI_MODE
         };
-        
+
         public static string AsString(this Data data) =>
             data switch
             {

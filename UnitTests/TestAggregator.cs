@@ -95,7 +95,7 @@ namespace test_auto_db_perf
                     Data.BYTES_PROCESSED_STD_DEV,
                     Data.EXECUTION_STD_DEV,
                     Data.MIN_EXECUTION_TIME,
-                    Data.MAX_EXECUTION_TIME,
+                    Data.MAX_EXECUTION_TIME
                 }));
 
             Assert.That(result.StringData.Keys.ToList(),

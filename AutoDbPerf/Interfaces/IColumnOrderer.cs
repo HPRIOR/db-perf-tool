@@ -6,6 +6,5 @@ namespace AutoDbPerf.Interfaces
     public interface IColumnOrderer
     {
         List<string> GetOrderedColumns(TableData tableData);
-
     }
 }

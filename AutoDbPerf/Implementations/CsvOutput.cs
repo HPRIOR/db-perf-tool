@@ -5,7 +5,6 @@ using System.Text;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
 using AutoDbPerf.Utils;
-using Google.Apis.Bigquery.v2.Data;
 using Microsoft.Extensions.Logging;
 
 namespace AutoDbPerf.Implementations

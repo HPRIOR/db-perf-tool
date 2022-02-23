@@ -15,10 +15,7 @@ namespace AutoDbPerf.Utils
             foreach (var (i, str) in strings.Enumerate())
             {
                 sb.Append(str);
-                if (i < strings.Count() - 1)
-                {
-                    sb.Append(separator);
-                }
+                if (i < strings.Count() - 1) sb.Append(separator);
             }
 
             return sb.ToString();
@@ -27,15 +24,9 @@ namespace AutoDbPerf.Utils
         private static string FlattenStringBase(this IEnumerable<string> strings, string separator) =>
             strings.AggregateToString(separator);
 
-        public static string FlattenToParagraph(this IEnumerable<string> strings)
-        {
-            return FlattenStringBase(strings, "\n");
-        }
+        public static string FlattenToParagraph(this IEnumerable<string> strings) => FlattenStringBase(strings, "\n");
 
-        public static string FlattenToCommaList(this IEnumerable<string> strings)
-        {
-            return FlattenStringBase(strings, ",");
-        }
+        public static string FlattenToCommaList(this IEnumerable<string> strings) => FlattenStringBase(strings, ",");
 
         public static float GetFirstNumberFromLineWith(this IEnumerable<string> strings, string identifier)
         {

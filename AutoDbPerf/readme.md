@@ -4,25 +4,32 @@ This tool will execute a series of SQL files and produce a table with their plan
 
 ## Using the tool
 
-The tool can be run natively with the .NET runtime/sdk or with a container. In either case
-several environment variables need to be set - see below.
+The tool can be run natively with the .NET runtime/sdk or with a container. In either case several environment variables
+need to be set - see below.
 
 ### Natively
+
 ```bash
 dotnet run --project AutoDbPerf 
 ```
 
 ## Docker
-To build the container a compressed clickhouse binary needs to be available to the docker file (it is not included in the repo).
-Ensure that zip has been installed, then cd into AutoDbPerf and run:
+
+To build the container a compressed clickhouse binary needs to be available to the docker file (it is not included in
+the repo). Ensure that zip has been installed, then cd into AutoDbPerf and run:
+
 ```bash
 curl -O 'https://builds.clickhouse.com/master/amd64/clickhouse' && chmod a+x clickhouse && zip clickhouse clickhouse
 ```
+
 Then run:
+
 ```bash
 docker build . -t auto-db-perf
 ```
-### Postgres 
+
+### Postgres
+
 ```bash
 docker run \ 
   -e TARGET=postgres \
@@ -35,9 +42,11 @@ docker run \
   -v "/local/path/:/app/Volume" \
   auto-db-perf
 ```
+
 Note: when running postgres benchmarks you *must* include explain analyse at the top of each query.
 
 ### BigQuery
+
 ```bash
 docker run \
   -e TARGET=bq \
@@ -48,6 +57,7 @@ docker run \
   -v "/local/path/:/app/Volume" \
   auto-db-perf
 ````
+
 ### Elastic
 
 ```bash
@@ -61,6 +71,7 @@ docker run \
 ```
 
 ### Clickhouse
+
 ```bash
 docker run  \
   -e TARGET=clickhouse   \
@@ -70,42 +81,50 @@ docker run  \
   auto-db-perf 
 ```
 
-A volume is used so that files containing queries can be accessed 
-and the output can be saved on the host computer. 
+A volume is used so that files containing queries can be accessed and the output can be saved on the host computer.
 
 ## Environment variables
+
 Several environment variables need to be set otherwise the apps defaults will be run in appsettings.json.
+
 #### General
-  - TARGET
+
+- TARGET
     - The type of query to test (e.g. BigQuery (bq), Postgres (postgres), Elastic (elastic), ClickHouse (clickhouse))
-  - QUERYPATH
+- QUERYPATH
     - The path which contains the queries you want to benchmark (see section below for directory structure details)
-  - TIMEOUT
-    - The maximum time a query should run for in minutes 
-  - AVGPRECISION
-    - The number of times each query will run to calculate an average 
-  - OUTPUTDIR
+- TIMEOUT
+    - The maximum time a query should run for in minutes
+- AVGPRECISION
+    - The number of times each query will run to calculate an average
+- OUTPUTDIR
     - The directory in which to save the result
-  - OUTPUTTYPE
+- OUTPUTTYPE
     - The type of output produced (only csv supported currently)
-  - IGNOREFIRST
+- IGNOREFIRST
     - Ignores the first result of all the queries
-  - ORDER
+- ORDER
     - The order in which queries are executed in each scenario (rr - round robin, seq - sequential)
+
 #### Postgres
-  - PGHOST
-  - PGNAME
-  - PGPASSWORD
-  - PGPORT
+
+- PGHOST
+- PGNAME
+- PGPASSWORD
+- PGPORT
+
 #### BigQuery
-  - GOOGLECREDPATH
+
+- GOOGLECREDPATH
     - The path to a json file containing google credentials
-  - GOOGLEPROJECTID
+- GOOGLEPROJECTID
     - e.g. gfk-eco-sandbox-red
+
 #### ELASTIC
-  - ELASTICINDEX
+
+- ELASTICINDEX
     - The elastic indices to use in a given query (useful when testing a single scenario)
-  - INDEXV
+- INDEXV
     - The index version to prepend to each index of a matched scenario (see 'Notes on elastic indices' below)
 
 ## Query folder structure
@@ -131,25 +150,22 @@ accomodate, but will leave blank "N/A" cells for empty parts of the table.
 The intention is that `scenario1-query1` would be similar to `scenario2-query1` such that variations in SQL (different
 scenarios) can be tested and compared.
 
-
 ## Running the integration tests
 
-To run the integration tests, their dependencies will need to be setup. This can be done changing directory to 
+To run the integration tests, their dependencies will need to be setup. This can be done changing directory to
 `IntegrationTests` and running:
 
 ```bash
 docker-compose up --detach && ./TestDependencies/setup-dependencies.sh
 ```
 
-The BigQuery benchmark tests rely on there being a google credentials json file located in `Resources/gcreds/gcreds.json`
-
-
+The BigQuery benchmark tests rely on there being a google credentials json file located
+in `Resources/gcreds/gcreds.json`
 
 ## Extending the tool
 
-To extend the tool to include other databases the IQueryExecutor interface needs to be implemented
-and added to the `BuildWith` method in `Program.cs`
-
+To extend the tool to include other databases the IQueryExecutor interface needs to be implemented and added to
+the `BuildWith` method in `Program.cs`
 
 ## Notes
 

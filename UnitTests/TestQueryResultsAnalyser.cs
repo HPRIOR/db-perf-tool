@@ -12,6 +12,12 @@ namespace test_auto_db_perf
     [TestFixture]
     public class TestQueryResultsAnalyser
     {
+        [SetUp]
+        public void Setup()
+        {
+            _queryResultAggregator = Substitute.For<IQueryResultAggregator>();
+        }
+
         private class Context : IContext
         {
             private readonly bool _ignoreFirst;
@@ -31,21 +37,13 @@ namespace test_auto_db_perf
             }
         }
 
-        private Dictionary<Data, string> GetTestDictionary(string content)
-        {
-            return new Dictionary<Data, string>
+        private Dictionary<Data, string> GetTestDictionary(string content) =>
+            new Dictionary<Data, string>
             {
                 { Data.BI_MODE, content }
             };
-        }
 
         private IQueryResultAggregator _queryResultAggregator;
-
-        [SetUp]
-        public void Setup()
-        {
-            _queryResultAggregator = Substitute.For<IQueryResultAggregator>();
-        }
 
 
         [Test]
@@ -55,7 +53,7 @@ namespace test_auto_db_perf
             {
                 new("scenario1", "query1", null, null),
                 new("scenario1", "query1", null, null, true),
-                new("scenario1", "query1", null, null),
+                new("scenario1", "query1", null, null)
             };
 
             var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultAggregator);
@@ -73,7 +71,7 @@ namespace test_auto_db_perf
             var queryResults = new List<QueryResult>
             {
                 new("scenario1", "query1", null, null, true),
-                new("scenario1", "query1", null, null, true),
+                new("scenario1", "query1", null, null, true)
             };
 
             var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultAggregator);
@@ -91,7 +89,7 @@ namespace test_auto_db_perf
             {
                 new("scenario1", "query1", null, null, true),
                 new("scenario1", "query1", null, GetTestDictionary("first")),
-                new("scenario1", "query1", null, GetTestDictionary("second")),
+                new("scenario1", "query1", null, GetTestDictionary("second"))
             };
 
             var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultAggregator);
@@ -112,7 +110,7 @@ namespace test_auto_db_perf
             {
                 new("scenario1", "query1", null, null, true),
                 new("scenario1", "query1", null, GetTestDictionary("first")),
-                new("scenario1", "query1", null, GetTestDictionary("second")),
+                new("scenario1", "query1", null, GetTestDictionary("second"))
             };
 
             var queryResultsAnalyser = new QueryResultsAnalyser(new Context(false), _queryResultAggregator);
@@ -156,7 +154,7 @@ namespace test_auto_db_perf
                 new("scenario1", "query1", null, null, true),
                 new("scenario1", "query1", null, GetTestDictionary("accepted")),
                 new("scenario1", "query1", null, null, true),
-                new("scenario1", "query1", null, GetTestDictionary("accepted")),
+                new("scenario1", "query1", null, GetTestDictionary("accepted"))
             };
 
             var queryResultsAnalyser = new QueryResultsAnalyser(new Context(true), _queryResultAggregator);

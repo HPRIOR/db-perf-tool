@@ -12,7 +12,7 @@ namespace test_auto_db_perf
 
     public class TestColumnOrderer
     {
-        private IColumnOrderer _columnOrderer = new ColumnOrderer();
+        private readonly IColumnOrderer _columnOrderer = new ColumnOrderer();
 
         private TableResults GetTableResult(List<Data>? numData, List<Data>? strData)
         {
@@ -107,7 +107,7 @@ namespace test_auto_db_perf
             );
             var sut = _columnOrderer.GetOrderedColumns(new TableData(tableResults));
             Assert.That(sut[0], Is.EqualTo(Data.PLANNING_TIME.AsString()));
-            Assert.That(sut[1],Is.EqualTo(Data.BYTES_BILLED.AsString()));
+            Assert.That(sut[1], Is.EqualTo(Data.BYTES_BILLED.AsString()));
             Assert.That(sut[2], Is.EqualTo(Data.AVG_BYTES_BILLED.AsString()));
             Assert.That(sut[3], Is.EqualTo(Data.BI_MODE.AsString()));
         }
