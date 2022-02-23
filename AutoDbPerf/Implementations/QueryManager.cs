@@ -10,7 +10,6 @@ namespace AutoDbPerf.Implementations
 {
     public class QueryManager : IQueryManager
     {
-        private readonly IDirectoryScanner _directoryScanner;
         private readonly IContext _context;
         private readonly IQueryExecutor _queryExecutor;
 
