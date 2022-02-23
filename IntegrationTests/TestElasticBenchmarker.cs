@@ -18,13 +18,15 @@ namespace IntegrationTests
             var host = Host.CreateDefaultBuilder().ConfigureServices((_, services) =>
             {
                 services.AddTransient<IQueryManager, QueryManager>();
-                services.AddTransient<IResultAnalyser, ResultAnalyser>();
                 services.AddTransient<ITableOutput, CsvOutput>();
                 services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                 services.AddTransient<IDirectoryScanner, DirectoryScanner>();
                 services.AddTransient<ICommandExecutor, CommandExecutor>();
                 services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();
                 services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
+                services.AddTransient<IColumnOrderer, ColumnOrderer>();
+                services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
+                services.AddTransient<IQueryResultAggregator, BasicQueryResultAggregator>();
                 services.AddSingleton<IContext>(new Context());
             }).Build();
             _benchmarker = ActivatorUtilities.CreateInstance<Benchmarker>(host.Services);
@@ -61,7 +63,7 @@ namespace IntegrationTests
              var avgPrecision = 5;
              var timeout = 5000;
              var result = _benchmarker.GetBenchmarks(queryPath, avgPrecision, timeout);
-             var expected = "scenarios,scenario1,scenario2\nquery1,Error - see logs,Error - see logs\nquery2,Error - see logs,Error - see logs\n";
+             var expected = "scenarios,scenario1,scenario2\n,Error,Error\nquery1,Error - see logs,Error - see logs\nquery2,Error - see logs,Error - see logs\n";
              Assert.That(result, Is.EqualTo(expected));
         }
     }

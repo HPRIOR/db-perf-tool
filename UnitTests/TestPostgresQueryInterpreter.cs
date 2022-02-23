@@ -9,12 +9,12 @@ namespace test_auto_db_perf
     [TestFixture]
     public class TestPostgresQueryInterpreter
     {
-        private PostgresQueryInterpreter? _postgresQueryInterpreter;
+        private PgQueryInterpreter? _postgresQueryInterpreter;
 
         [SetUp]
         public void Setup()
         {
-            _postgresQueryInterpreter = new PostgresQueryInterpreter();
+            _postgresQueryInterpreter = new PgQueryInterpreter();
         }
 
         [Test]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Interfaces;
@@ -16,33 +17,30 @@ namespace test_auto_db_perf
         [SetUp]
         public void Setup()
         {
-            _directoryScanner = Substitute.For<IDirectoryScanner>();
-            _directoryScanner.ScanDirectories("").Returns(new[]
-            {
-                new ScenarioQueryPath("scenario1", new[] { "query1" }),
-                new ScenarioQueryPath("scenario2", new[] { "query2" }),
-                new ScenarioQueryPath("scenario3", new[] { "query3" }),
-            });
-
             _commandExecutor = Substitute.For<IQueryExecutor>();
             _commandExecutor.ExecuteQuery("query1", "scenario1", 5000)
-                .Returns(new QueryResult(0, 0, "query1", "scenario1"));
+                .Returns(new QueryResult("scenario1", "query1", null, null));
             _commandExecutor.ExecuteQuery("query2", "scenario2", 5000)
-                .Returns(new QueryResult(0, 0, "query2", "scenario2"));
+                .Returns(new QueryResult("scenario2", "query2", null, null));
             _commandExecutor.ExecuteQuery("query3", "scenario3", 5000)
-                .Returns(new QueryResult(0, 0, "query3", "scenario3"));
+                .Returns(new QueryResult("scenario3", "query3", null, null));
         }
 
         private IQueryExecutor? _commandExecutor;
-        private IDirectoryScanner? _directoryScanner;
 
         [Test]
         public void GivesCorrectNumberOfQueryResults_WithAvgPrecisionOfTwo()
         {
             var queryExecutor =
-                new QueryManager(new LoggerFactory(), new Context(new ConfigurationManager()), _commandExecutor, _directoryScanner);
+                new QueryManager(new AutoDbPerf.Implementations.Context(new ConfigurationManager()), _commandExecutor);
 
-            var result = queryExecutor.GetQueryResult("", 2);
+            var queryInfo = new List<QueryInfo>
+            {
+                new("scenario1", new[] { "query1" }),
+                new("scenario2", new[] { "query2" }),
+                new("scenario3", new[] { "query3" })
+            };
+            var result = queryExecutor.GetQueryResults(queryInfo, 2);
             Assert.That(result.Count(), Is.EqualTo(6));
         }
 
@@ -50,10 +48,108 @@ namespace test_auto_db_perf
         public void ErrorIsThrown_WithZeroAvgPrecision()
         {
             var queryExecutor =
-                new QueryManager(new LoggerFactory(), new Context(new ConfigurationManager()), _commandExecutor, _directoryScanner);
+                new QueryManager(new AutoDbPerf.Implementations.Context(new ConfigurationManager()), _commandExecutor);
+
+            var queryInfo = new List<QueryInfo>
+            {
+                new("scenario1", new[] { "query1" }),
+                new("scenario2", new[] { "query2" }),
+                new("scenario3", new[] { "query3" })
+            };
             Assert.Throws<ArgumentException>(() =>
-                queryExecutor.GetQueryResult("", 0)
+                queryExecutor.GetQueryResults(queryInfo, 0)
             );
+        }
+
+
+        private IContext GetNewContext(string order)
+        {
+            return new Context(order);
+        }
+
+        private class Context : IContext
+        {
+            private readonly string _order;
+
+            internal Context(string order)
+            {
+                _order = order;
+            }
+
+            public string GetEnv(ContextKey contextKey) => contextKey switch
+            {
+                ContextKey.ORDER => _order,
+            };
+        }
+
+        private void AssertStructuralEquality(QueryResult a, QueryResult b)
+        {
+            Assert.That(a.Scenario, Is.EqualTo(b.Scenario));
+            Assert.That(a.Query, Is.EqualTo(b.Query));
+        }
+
+        [Test]
+        public void QueryResults_AreOrderedBy_RoundRobin()
+        {
+            var queryExecutor =
+                new QueryManager(GetNewContext("rr"), _commandExecutor);
+
+            var queryInfo = new List<QueryInfo>
+            {
+                new("scenario1", new[] { "query1" }),
+                new("scenario2", new[] { "query2" }),
+                new("scenario3", new[] { "query3" })
+            };
+
+            var expected = new List<QueryResult>
+            {
+                new("scenario1", "query1", null, null),
+                new("scenario2", "query2", null, null),
+                new("scenario3", "query3", null, null),
+                new("scenario1", "query1", null, null),
+                new("scenario2", "query2", null, null),
+                new("scenario3", "query3", null, null),
+            };
+            var result = queryExecutor.GetQueryResults(queryInfo, 2).ToList();
+
+            result.Zip(expected).ToList().ForEach(t =>
+            {
+                Console.WriteLine("expected:" + t.Second.Scenario + " " + t.Second.Query);
+                Console.WriteLine("found:   " + t.First.Scenario + " " + t.First.Query);
+                AssertStructuralEquality(t.First, t.Second);
+            });
+        }
+
+        [Test]
+        public void QueryResults_AreOrderedBy_Sequence()
+        {
+            var queryExecutor =
+                new QueryManager(GetNewContext("seq"), _commandExecutor);
+
+            var queryInfo = new List<QueryInfo>
+            {
+                new("scenario1", new[] { "query1" }),
+                new("scenario2", new[] { "query2" }),
+                new("scenario3", new[] { "query3" })
+            };
+
+            var expected = new List<QueryResult>
+            {
+                new("scenario1", "query1", null, null),
+                new("scenario1", "query1", null, null),
+                new("scenario2", "query2", null, null),
+                new("scenario2", "query2", null, null),
+                new("scenario3", "query3", null, null),
+                new("scenario3", "query3", null, null),
+            };
+            var result = queryExecutor.GetQueryResults(queryInfo, 2).ToList();
+
+            result.Zip(expected).ToList().ForEach(t =>
+            {
+                Console.WriteLine("expected:" + t.Second.Scenario + " " + t.Second.Query);
+                Console.WriteLine("found:   " + t.First.Scenario + " " + t.First.Query);
+                AssertStructuralEquality(t.First, t.Second);
+            });
         }
     }
 }

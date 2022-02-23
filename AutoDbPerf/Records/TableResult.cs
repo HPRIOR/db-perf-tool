@@ -1,15 +1,11 @@
-using System;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using AutoDbPerf.Implementations;
 
 namespace AutoDbPerf.Records
 {
     public record TableResult(
-        float AvgPlanningTime,
-        float AvgExecutionTime,
-        float PlanningStdDev = 0,
-        float ExecutionStdDev = 0,
-        string Message = "",
-        float GbProcessed = 0,
-        string BiEngine = ""
-        );
+        Dictionary<Data, float> NumericData,
+        Dictionary<Data, string> StringData,
+        bool HasProblem = false,
+        bool IsEmpty = false);
 }

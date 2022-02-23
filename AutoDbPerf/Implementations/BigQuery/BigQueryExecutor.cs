@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -35,26 +36,32 @@ namespace AutoDbPerf.Implementations.BigQuery
                 {
                     _logger.LogError("Error occured during query execution: {}. JobId: {}", cmdResult.Problem,
                         cmdResult.JobId);
-                    return new QueryResult(0, 0, queryName, scenario, cmdResult.Problem);
+                    return new QueryResult(scenario, queryName, null, null, true, cmdResult.Problem);
                 }
 
                 _logger.LogInformation(
                     "{}-{} - Execution time: {}ms. Processed: {}gb. JobId: {}, BIEngineMode: {}, BytesBilled: {}",
                     scenario,
                     queryName, cmdResult.Time, cmdResult.ByteProcessed,
-                    cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.bytesBilled);
-                return new QueryResult(0, cmdResult.Time, queryName, scenario, "", cmdResult.ByteProcessed, cmdResult.BiEngineMode);
+                    cmdResult.JobId, cmdResult.BiEngineMode, cmdResult.BytesBilled);
+                var numData = new Dictionary<Data, float>
+                {
+                    { Data.EXECUTION_TIME, cmdResult.Time },
+                    { Data.BYTES_PROCESSED, cmdResult.ByteProcessed },
+                    { Data.BYTES_BILLED, cmdResult.BytesBilled }
+                };
+                var strData = new Dictionary<Data, string> { { Data.BI_MODE, cmdResult.BiEngineMode } };
+                return new QueryResult(scenario, queryName, numData, strData);
             }
 
             _logger.LogWarning("Command timout");
-            return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
+            return new QueryResult(scenario, queryName, null, null, true, $"Timeout at {timeout}ms");
         }
 
         private Task<BqCommandResult> QueryTask(string queryPath)
         {
             return Task.Run(() =>
             {
-                //TODO use polly
                 try
                 {
                     var projectId = _ctx.GetEnv(ContextKey.GOOGLEPROJECTID);
@@ -73,7 +80,7 @@ namespace AutoDbPerf.Implementations.BigQuery
                     var errors = queryJob.Status.Errors;
                     if (errors != null) return new BqCommandResult(errors.Last().Message, 0, jobId, 0, "", 0);
 
-                    var bytesProcessed =  job.Statistics?.Query?.TotalBytesProcessed / 1073741824d  ?? 0;
+                    var bytesProcessed = job.Statistics?.Query?.TotalBytesProcessed / 1073741824d ?? 0;
                     var biEngineMode = job.Statistics?.Query?.BiEngineStatistics?.BiEngineMode ?? "NONE";
                     var bytesBilled = job.Statistics?.Query?.TotalBytesBilled ?? 0;
                     var queryTime = (job.Statistics?.EndTime - job.Statistics?.StartTime) ?? 0;
@@ -96,6 +103,6 @@ namespace AutoDbPerf.Implementations.BigQuery
         }
 
         private record BqCommandResult(string Problem, float Time, string JobId, float ByteProcessed,
-            string BiEngineMode, long bytesBilled);
+            string BiEngineMode, long BytesBilled);
     }
 }

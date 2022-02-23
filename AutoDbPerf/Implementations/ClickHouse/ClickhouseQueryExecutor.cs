@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -61,17 +62,17 @@ namespace AutoDbPerf.Implementations.ClickHouse
                 if (cmdResult.Problem.Any())
                 {
                     _logger.LogError("Error occured during query Execution: {}", cmdResult.Problem);
-                    return new QueryResult(0, 0, queryName, scenario,
-                        cmdResult.Problem);
+                    return new QueryResult(scenario, queryName, null, null, true, cmdResult.Problem);
                 }
 
                 var cmdResultTime = cmdResult.Time;
                 _logger.LogInformation("{}-{} - Execution time: {}", scenario, queryName, cmdResultTime);
-                return new QueryResult(0, cmdResultTime, queryName, scenario);
+                var data = new Dictionary<Data, float> { { Data.EXECUTION_TIME, cmdResultTime } };
+                return new QueryResult(scenario, queryName, data, null);
             }
 
             _logger.LogWarning("Command timeout");
-            return new QueryResult(0, 0, queryName, scenario, $"Timeout at {timeout}ms");
+            return new QueryResult(scenario, queryName, null, null, true, $"Timeout at {timeout}ms");
         }
 
         private record ClickHouseCommandResult(string Problem, float Time);

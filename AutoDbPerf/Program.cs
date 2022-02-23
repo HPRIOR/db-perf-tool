@@ -32,9 +32,10 @@ namespace AutoDbPerf
                 .ConfigureServices((ctx, services) =>
                 {
                     services.AddTransient<IQueryManager, QueryManager>();
-                    services.AddTransient<IResultAnalyser, ResultAnalyser>();
                     services.AddTransient<ITableOutput, CsvOutput>();
                     services.AddTransient<IDirectoryScanner, DirectoryScanner>();
+                    services.AddTransient<IQueryResultsAnalyser, QueryResultsAnalyser>();
+                    services.AddTransient<IColumnOrderer, ColumnOrderer>();
                     services.AddSingleton<IContext, Context>();
                     services.AddLogging();
                     BuildWith(ctx.Configuration, services);
@@ -61,20 +62,24 @@ namespace AutoDbPerf
                 case "postgres":
                     services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
-                    services.AddTransient<IQueryInterpreter, PostgresQueryInterpreter>();
-                    services.AddTransient<ICommandGenerator, PostgresCommandGenerator>();
+                    services.AddTransient<IQueryInterpreter, PgQueryInterpreter>();
+                    services.AddTransient<ICommandGenerator, PgCommandGenerator>();
+                    services.AddTransient<IQueryResultAggregator, PgQueryResultAggregator>();
                     return;
                 case "elastic":
                     services.AddTransient<IQueryExecutor, CliQueryExecutor>();
                     services.AddTransient<ICommandExecutor, CommandExecutor>();
                     services.AddTransient<IQueryInterpreter, ElasticQueryInterpreter>();
                     services.AddTransient<ICommandGenerator, ElasticCommandGenerator>();
+                    services.AddTransient<IQueryResultAggregator, BasicQueryResultAggregator>();
                     return;
                 case "bq":
                     services.AddTransient<IQueryExecutor, BigQueryExecutor>();
+                    services.AddTransient<IQueryResultAggregator, BqQueryResultAggregator>();
                     return;
                 case "clickhouse":
                     services.AddTransient<IQueryExecutor, ClickhouseQueryExecutor>();
+                    services.AddTransient<IQueryResultAggregator, BasicQueryResultAggregator>();
                     services.AddSingleton<HttpClient>();
                     return;
                 default:
