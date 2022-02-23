@@ -17,11 +17,8 @@ namespace AutoDbPerf.Implementations
         {
             var columns = tableData.ScenarioColumns;
             var rows = tableData.Rows;
-            
-            var (scenario, query) = columns
-                .SelectMany(col => rows.Select(row => (col, row)))
-                .FirstOrDefault(t => tableData.HasDataFor(t.col, t.row) &&
-                                     TableResultHasData(tableData.GetTableResult(t.col, t.row)));
+
+            var (scenario, query) = ForFirstResultWithData(tableData, columns, rows);
 
             if (scenario == "" || query == "")
                 return new List<string>();
@@ -34,6 +31,13 @@ namespace AutoDbPerf.Implementations
             var data = numericData.Concat(stringData);
             return GetOrderedEnums(data).Select(d => d.AsString()).ToList();
 
+        private (string col, string row) ForFirstResultWithData(TableData tableData,
+            IEnumerable<string> columns, IEnumerable<string> rows)
+        {
+            return columns
+                .SelectMany(col => rows.Select(row => (col, row)))
+                .FirstOrDefault(t => tableData.HasDataFor(t.col, t.row) &&
+                                     TableResultHasData(tableData.GetTableResult(t.col, t.row)));
         }
 
         private static List<Data> GetOrderedEnums(IEnumerable<Data> data)
