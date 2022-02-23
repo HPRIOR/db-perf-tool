@@ -11,18 +11,22 @@ namespace AutoDbPerf.Utils
             Data.EXECUTION_TIME,
             Data.AVG_EXECUTION_TIME,
             Data.EXECUTION_STD_DEV,
+            Data.MIN_EXECUTION_TIME,
+            Data.MAX_EXECUTION_TIME,
             Data.PLANNING_TIME,
             Data.AVG_PLANNING_TIME,
             Data.PLANNING_STD_DEV,
+            Data.MIN_PLANNING_TIME,
+            Data.MAX_PLANNING_TIME,
             Data.BYTES_BILLED,
             Data.AVG_BYTES_BILLED,
             Data.BYTES_BILLED_STD_DEV,
             Data.BYTES_PROCESSED,
             Data.AVG_BYTES_PROCESSED,
             Data.BYTES_PROCESSED_STD_DEV,
-            Data.BI_MODE,
+            Data.BI_MODE
         };
-        
+
         public static string AsString(this Data data) =>
             data switch
             {
@@ -39,6 +43,10 @@ namespace AutoDbPerf.Utils
                 Data.EXECUTION_TIME => "ExecutionTime",
                 Data.PLANNING_STD_DEV => "StdDev",
                 Data.PLANNING_TIME => "PlanningTime",
+                Data.MIN_PLANNING_TIME => "Min",
+                Data.MIN_EXECUTION_TIME => "Min",
+                Data.MAX_PLANNING_TIME => "Max",
+                Data.MAX_EXECUTION_TIME => "Max",
                 _ => throw new ArgumentOutOfRangeException(nameof(data), data, null)
             };
 

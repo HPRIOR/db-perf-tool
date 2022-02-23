@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Schema;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
-using Microsoft.Extensions.Logging;
 
 namespace AutoDbPerf.Implementations
 {
@@ -21,8 +19,6 @@ namespace AutoDbPerf.Implementations
             _context = context;
             _queryExecutor = queryExecutor;
         }
-
-        private record ScenarioQuery(string Scenario, string Query);
 
         public IEnumerable<QueryResult> GetQueryResults(IEnumerable<QueryInfo> queryInfo, int avgPrecision,
             int timeout = 5000)
@@ -49,9 +45,12 @@ namespace AutoDbPerf.Implementations
             return orderContext switch
             {
                 "rr" => scenarioQueries.GroupBy(tuple => tuple.Item2).SelectMany(group => group.Select(x => x.Item1)),
-                "seq" => scenarioQueries.OrderBy(sq => sq.Item1.Scenario).ThenBy(sq => sq.Item1.Query).Select(x => x.Item1),
+                "seq" => scenarioQueries.OrderBy(sq => sq.Item1.Scenario).ThenBy(sq => sq.Item1.Query)
+                    .Select(x => x.Item1),
                 _ => scenarioQueries.OrderBy(sq => sq.Item1.Scenario).Select(x => x.Item1)
             };
         }
+
+        private record ScenarioQuery(string Scenario, string Query);
     }
 }

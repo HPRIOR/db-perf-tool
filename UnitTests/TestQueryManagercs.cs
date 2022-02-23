@@ -5,7 +5,6 @@ using AutoDbPerf.Implementations;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -62,10 +61,7 @@ namespace test_auto_db_perf
         }
 
 
-        private IContext GetNewContext(string order)
-        {
-            return new Context(order);
-        }
+        private IContext GetNewContext(string order) => new Context(order);
 
         private class Context : IContext
         {
@@ -78,7 +74,7 @@ namespace test_auto_db_perf
 
             public string GetEnv(ContextKey contextKey) => contextKey switch
             {
-                ContextKey.ORDER => _order,
+                ContextKey.ORDER => _order
             };
         }
 
@@ -108,7 +104,7 @@ namespace test_auto_db_perf
                 new("scenario3", "query3", null, null),
                 new("scenario1", "query1", null, null),
                 new("scenario2", "query2", null, null),
-                new("scenario3", "query3", null, null),
+                new("scenario3", "query3", null, null)
             };
             var result = queryExecutor.GetQueryResults(queryInfo, 2).ToList();
 
@@ -140,7 +136,7 @@ namespace test_auto_db_perf
                 new("scenario2", "query2", null, null),
                 new("scenario2", "query2", null, null),
                 new("scenario3", "query3", null, null),
-                new("scenario3", "query3", null, null),
+                new("scenario3", "query3", null, null)
             };
             var result = queryExecutor.GetQueryResults(queryInfo, 2).ToList();
 

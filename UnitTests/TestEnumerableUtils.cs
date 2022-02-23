@@ -11,11 +11,35 @@ namespace test_auto_db_perf
     public class TestEnumerableUtils
     {
         [Test]
+        public void AggregateStrings_WillAggregateStringsWithoutSeparator()
+        {
+            var input = new List<string>
+            {
+                "A", "B", "C", "D"
+            };
+
+            var expected = "ABCD";
+            Assert.That(input.AggregateToString(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void AggregateStrings_WillAggregateStringsWithSeparator()
+        {
+            var input = new List<string>
+            {
+                "A", "B", "C", "D"
+            };
+
+            var expected = "A-B-C-D";
+            Assert.That(input.AggregateToString("-"), Is.EqualTo(expected));
+        }
+
+        [Test]
         public void FlattenToParagraph_WillWorkOnSingleItemList()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
-                "Line1",
+                "Line1"
             };
 
             var expected = "Line1";
@@ -25,12 +49,12 @@ namespace test_auto_db_perf
         [Test]
         public void FlattenToParagraph_WillProduceStringsWithLineBreaks()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
                 "Line1",
                 "Line2",
                 "Line3",
-                "Line4",
+                "Line4"
             };
 
             var expected = "Line1\nLine2\nLine3\nLine4";
@@ -40,12 +64,12 @@ namespace test_auto_db_perf
         [Test]
         public void FlattenToCommmaList_WillProduceCommandSeparatedWords()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
                 "Line1",
                 "Line2",
                 "Line3",
-                "Line4",
+                "Line4"
             };
 
             var expected = "Line1,Line2,Line3,Line4";
@@ -55,7 +79,7 @@ namespace test_auto_db_perf
         [Test]
         public void GetFirstNumberFromLineWith_WillGetTimeFromSpaceSeperatedLine()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
                 "hello the time is 10 o'clock",
                 "this does not contain the identifier"
@@ -69,7 +93,7 @@ namespace test_auto_db_perf
         [Test]
         public void GetFirstNumberFromLineWith_WillGetFirstNumberOfMany()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
                 "hello the time is 10 1 2 3 4 o'clock",
                 "this does not contain the identifier"
@@ -82,9 +106,9 @@ namespace test_auto_db_perf
         [Test]
         public void GetFirstNumberFromLineWithoutSpaces_WillRetrieveElasticTook()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
-                "{\"took\":2}",
+                "{\"took\":2}"
             };
 
             var expected = 2;
@@ -94,13 +118,13 @@ namespace test_auto_db_perf
         [Test]
         public void GetFirstNumberFromLineWith_WillGetFirstFromManyLines()
         {
-            var input = new List<string>()
+            var input = new List<string>
             {
                 "hello the time is 10 o'clock",
                 "this does not contain the identifier",
                 "1 this does not contain the identifier",
                 "2 this does not contain the identifier",
-                "3 this does not contain the identifier",
+                "3 this does not contain the identifier"
             };
 
             var expected = 10f;
@@ -155,7 +179,7 @@ namespace test_auto_db_perf
                 new("test-query-1", "test-scenario-1", null, null, true),
                 new("test-query-2", "test-scenario-2", null, null, true),
                 new("test-query-2", "test-scenario-2",
-                    new Dictionary<Data, float>() { { Data.PLANNING_TIME, 10f }, { Data.EXECUTION_TIME, 10f } }, null),
+                    new Dictionary<Data, float> { { Data.PLANNING_TIME, 10f }, { Data.EXECUTION_TIME, 10f } }, null),
                 savedQueryResult
             };
             var expected = new List<QueryResult> { savedQueryResult };
@@ -170,7 +194,7 @@ namespace test_auto_db_perf
             {
                 new("test-query-1", "test-scenario-1", null, null, true),
                 new("test-query-2", "test-scenario-2", null, null, true),
-                new("test-query-2", "test-scenario-2", null, null, true),
+                new("test-query-2", "test-scenario-2", null, null, true)
             };
             var expected = new List<QueryResult>();
 
@@ -217,6 +241,39 @@ namespace test_auto_db_perf
         {
             var sut = new List<float> { 0 }.StdDev();
             Assert.That(sut, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Enumerate_WillEnumerate_MultipleItems()
+        {
+            var input = new List<string> { "1", "2", "3", "4" };
+            var expected = new List<(int, string)>
+            {
+                (0, "1"),
+                (1, "2"),
+                (2, "3"),
+                (3, "4")
+            };
+            Assert.That(input.Enumerate(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void Enumerate_WillEnumerate_SingleItem()
+        {
+            var input = new List<string> { "1" };
+            var expected = new List<(int, string)>
+            {
+                (0, "1")
+            };
+            Assert.That(input.Enumerate(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void Enumerate_WillEnumerate_NoItems()
+        {
+            var input = new List<string>();
+            var expected = new List<(int, string)>();
+            Assert.That(input.Enumerate(), Is.EquivalentTo(expected));
         }
     }
 }

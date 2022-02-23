@@ -57,11 +57,11 @@ namespace IntegrationTests
             var avgPrecision = 5;
             var timeout = 5000;
             var result = _benchmarker.GetBenchmarks(sqlPath, avgPrecision, timeout);
-            var expected = "scenarios,scenario1,,,,scenario2\n" +
-                           ",AvgExecutionTime,StdDev,AvgPlanningTime,StdDev,AvgExecutionTime,StdDev,AvgPlanningTime,StdDev\n" +
-                           "query1,0.1,0,0.1,0,0.4,0,0.4,0\n" +
-                           "query2,0.2,0,0.2,0,0.5,0,0.5,0\n" +
-                           "query3,0.3,0,0.3,0,0.6,0,0.6,0\n";
+            var expected = "scenarios,scenario1,,,,,,,,scenario2\n" +
+                           ",AvgExecutionTime,StdDev,Min,Max,AvgPlanningTime,StdDev,Min,Max,AvgExecutionTime,StdDev,Min,Max,AvgPlanningTime,StdDev,Min,Max\n" +
+                           "query1,0.1,0,0.1,0.1,0.1,0,0.1,0.1,0.4,0,0.4,0.4,0.4,0,0.4,0.4\n" +
+                           "query2,0.2,0,0.2,0.2,0.2,0,0.2,0.2,0.5,0,0.5,0.5,0.5,0,0.5,0.5\n" +
+                           "query3,0.3,0,0.3,0.3,0.3,0,0.3,0.3,0.6,0,0.6,0.6,0.6,0,0.6,0.6\n";
             Assert.That(result, Is.EqualTo(expected));
         }
 

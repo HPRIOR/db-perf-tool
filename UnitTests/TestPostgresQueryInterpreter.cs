@@ -9,18 +9,18 @@ namespace test_auto_db_perf
     [TestFixture]
     public class TestPostgresQueryInterpreter
     {
-        private PgQueryInterpreter? _postgresQueryInterpreter;
-
         [SetUp]
         public void Setup()
         {
             _postgresQueryInterpreter = new PgQueryInterpreter();
         }
 
+        private PgQueryInterpreter? _postgresQueryInterpreter;
+
         [Test]
         public void ScanPredicateCapturesPlanning()
         {
-            var output = new List<string>()
+            var output = new List<string>
             {
                 "Planning time: 0",
                 "Some other output"
@@ -34,7 +34,7 @@ namespace test_auto_db_perf
         [Test]
         public void ScanPredicateCapturesExecution()
         {
-            var output = new List<string>()
+            var output = new List<string>
             {
                 "Execution time: 0",
                 "Some other output"
@@ -53,7 +53,7 @@ namespace test_auto_db_perf
             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
             Assert.That(sut.ErrorMessage, Is.EqualTo("This is an error\nWith more than one line as output"));
         }
-        
+
         [Test]
         public void WillReturnErrorMessageInInterpretedCommand_WithStdOut()
         {
@@ -62,7 +62,7 @@ namespace test_auto_db_perf
             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
             Assert.That(sut.ErrorMessage, Is.EqualTo("This is an error\nWith more than one line as output"));
         }
-        
+
         [Test]
         public void IfErrorFalse_IfNoStdErr()
         {
@@ -71,12 +71,12 @@ namespace test_auto_db_perf
             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
             Assert.That(sut.IsError, Is.False);
         }
-        
+
         [Test]
         public void WillNotReturnErrorMessage_IfNoStdErr()
         {
             var input = new CommandResult(new[] { "I have some output" },
-                new[] {""});
+                new[] { "" });
             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
             Assert.That(sut.ErrorMessage, Is.Empty);
         }
@@ -86,26 +86,26 @@ namespace test_auto_db_perf
         {
             var input = new CommandResult(new[] { "Planning time: 10" },
                 new List<string>());
-             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
-             Assert.That(sut.PlanningTime, Is.EqualTo(10));           
+            var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
+            Assert.That(sut.PlanningTime, Is.EqualTo(10));
         }
-        
+
         [Test]
         public void WillReturnCorrectExecutionResult()
         {
             var input = new CommandResult(new[] { "Execution time: 10" },
                 new List<string>());
-             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
-             Assert.That(sut.ExecutionTime, Is.EqualTo(10));           
+            var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
+            Assert.That(sut.ExecutionTime, Is.EqualTo(10));
         }
-        
+
         [Test]
         public void WillReturnCorrectExecutionAndPlanningResult()
         {
             var input = new CommandResult(new[] { "Execution time: 10", "Planning time: 10" },
                 new List<string>());
-             var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
-             Assert.That(sut, Is.EqualTo(new InterpretedCommand(false, 10, 10)));           
+            var sut = _postgresQueryInterpreter.InterpretCommandResult(input);
+            Assert.That(sut, Is.EqualTo(new InterpretedCommand(false, 10, 10)));
         }
     }
 }

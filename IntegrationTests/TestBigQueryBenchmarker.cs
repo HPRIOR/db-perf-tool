@@ -1,8 +1,6 @@
 using System;
-using System.Linq;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Implementations.BigQuery;
-using AutoDbPerf.Implementations.Postgres;
 using AutoDbPerf.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,15 +56,12 @@ namespace IntegrationTests
         [Test]
         public void WillContainErrorsInResult()
         {
-             var sqlPath = "Resources/bigquery-error";
-             var avgPrecision = 1;
-             var timeout = 10000;
-             var result = _benchmarker.GetBenchmarks(sqlPath, avgPrecision, timeout);
-             Console.WriteLine(result);
+            var sqlPath = "Resources/bigquery-error";
+            var avgPrecision = 1;
+            var timeout = 10000;
+            var result = _benchmarker.GetBenchmarks(sqlPath, avgPrecision, timeout);
+            Console.WriteLine(result);
             Assert.That(result.Contains("Error"), Is.True);
         }
-        
-        
-        
     }
 }

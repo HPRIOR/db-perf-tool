@@ -6,11 +6,11 @@ namespace AutoDbPerf.Implementations
 {
     public class Benchmarker
     {
-        private readonly IQueryManager _queryManager;
-        private readonly ITableOutput _tableOutput;
-        private readonly ILogger<Benchmarker> _logger;
         private readonly IDirectoryScanner _directoryScanner;
+        private readonly ILogger<Benchmarker> _logger;
+        private readonly IQueryManager _queryManager;
         private readonly IQueryResultsAnalyser _queryResultsAnalyser;
+        private readonly ITableOutput _tableOutput;
 
         public Benchmarker(
             ILoggerFactory loggerFactory,

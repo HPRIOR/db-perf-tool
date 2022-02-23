@@ -10,15 +10,20 @@ namespace AutoDbPerf.Implementations
     {
         public TableResult GetTableDataFrom(IEnumerable<QueryResult> queryResult)
         {
-            var qrList = queryResult.ToList();
+            var executionTime = queryResult.Select(x => x.NumData[Data.EXECUTION_TIME]).ToList();
 
-            var averageExecutionTime = qrList.Average(x => x.NumData[Data.EXECUTION_TIME]);
-            var executionStdDev = qrList.Select(x => x.NumData[Data.EXECUTION_TIME]).StdDev();
+            var averageExecutionTime = executionTime.Average();
+            var executionStdDev = executionTime.StdDev();
+
+            var minExecutionTime = executionTime.Min();
+            var maxExecutionTime = executionTime.Max();
 
             var numData = new Dictionary<Data, float>
             {
                 { Data.AVG_EXECUTION_TIME, averageExecutionTime },
-                { Data.EXECUTION_STD_DEV, executionStdDev }
+                { Data.EXECUTION_STD_DEV, executionStdDev },
+                { Data.MIN_EXECUTION_TIME, minExecutionTime },
+                { Data.MAX_EXECUTION_TIME, maxExecutionTime }
             };
 
             return new TableResult(numData, null);

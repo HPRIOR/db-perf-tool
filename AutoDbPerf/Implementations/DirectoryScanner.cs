@@ -14,21 +14,15 @@ namespace AutoDbPerf.Implementations
                 .EnumerateDirectories(path)
                 .Where(NotDotFile)
                 .Where(ContainsNonDotFiles);
-            
+
 
             return scenarios.OrderBy(x => x).Select(scenario =>
                 new QueryInfo(scenario.Split(Path.DirectorySeparatorChar).Last(),
                     Directory.EnumerateFiles(scenario).Where(NotDotFile)));
         }
 
-        private static bool NotDotFile(string str)
-        {
-            return !str.Split(Path.DirectorySeparatorChar).Last().StartsWith(".");
-        }
+        private static bool NotDotFile(string str) => !str.Split(Path.DirectorySeparatorChar).Last().StartsWith(".");
 
-        private static bool ContainsNonDotFiles(string str)
-        {
-            return Directory.EnumerateFiles(str).Where(NotDotFile).Any();
-        }
+        private static bool ContainsNonDotFiles(string str) => Directory.EnumerateFiles(str).Where(NotDotFile).Any();
     }
 }

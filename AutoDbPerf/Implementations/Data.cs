@@ -15,5 +15,9 @@ namespace AutoDbPerf.Implementations
         EXECUTION_TIME,
         PLANNING_STD_DEV,
         PLANNING_TIME,
+        MIN_PLANNING_TIME,
+        MAX_PLANNING_TIME,
+        MIN_EXECUTION_TIME,
+        MAX_EXECUTION_TIME
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using AutoDbPerf.Implementations.Exceptions;
@@ -17,7 +16,10 @@ namespace AutoDbPerf.Implementations.Elastic
             _ctx = ctx;
             _indices = GetIndices();
         }
-        
+
+        public string GenerateCommand(string queryPath) =>
+            $"-c \"curl -XPOST --header 'Content-Type: application/json' \\\"http://{_ctx.GetEnv(ContextKey.HOST)}:9200/{GetIndex(queryPath)}/_search?request_cache=false&filter_path=took\\\" -d'{GetQueryFromPath(queryPath)}' --silent --show-error\"";
+
         private Dictionary<string, string> GetIndices() => new()
         {
             {
@@ -44,27 +46,20 @@ namespace AutoDbPerf.Implementations.Elastic
             }
         };
 
-        public string GenerateCommand(string queryPath)
-        {
-            return
-                $"-c \"curl -XPOST --header 'Content-Type: application/json' \\\"http://{_ctx.GetEnv(ContextKey.HOST)}:9200/{GetIndex(queryPath)}/_search?request_cache=false&filter_path=took\\\" -d'{GetQueryFromPath(queryPath)}' --silent --show-error\"";
-        }
-
-        private string GetQueryFromPath(string queryPath)
-        {
-            return File.Exists(queryPath)
+        private string GetQueryFromPath(string queryPath) =>
+            File.Exists(queryPath)
                 ? File.ReadAllText(queryPath)
                     .Replace("\n", "")
                     .Replace("\"", "\\\"")
                 : "";
-        }
 
         private string GetIndex(string queryPath)
         {
             var scenario = queryPath.GetScenarioFromPath();
             var elasticIndexFromEnv = _ctx.GetEnv(ContextKey.ELASTICINDEX);
-            const string errorMsg = "No elastic index given - set ELASTICINDEX or INDEXV with the appropriate supercell folder names";
-            
+            const string errorMsg =
+                "No elastic index given - set ELASTICINDEX or INDEXV with the appropriate supercell folder names";
+
             switch (elasticIndexFromEnv)
             {
                 case "" when _indices.ContainsKey(scenario):

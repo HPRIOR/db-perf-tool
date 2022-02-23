@@ -1,11 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Transactions;
 using AutoDbPerf.Implementations;
 using AutoDbPerf.Records;
-using Google.Apis.Bigquery.v2.Data;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
 using NUnit.Framework;
 
 namespace test_auto_db_perf
@@ -20,19 +16,19 @@ namespace test_auto_db_perf
                 { Data.PLANNING_TIME, planningTime }
             };
 
-        
-       //TODO further test relationship between cols,rows, orderedData
-       //TODO Mock Column orderer and test that in isolation
+
+        //TODO further test relationship between cols,rows, orderedData
+        //TODO Mock Column orderer and test that in isolation
 
         [Test]
         public void CorrectOutputIsGiven_WithMessagesInScenario()
         {
-            var columnRowData = new Dictionary<(string, string), TableResult>()
+            var columnRowData = new Dictionary<(string, string), TableResult>
             {
                 { ("scenario1", "query1"), new TableResult(CreateDataDict(0, 0), null, true) },
                 { ("scenario1", "query2"), new TableResult(CreateDataDict(0.208f, 0.044f), null) },
                 { ("scenario2", "query3"), new TableResult(CreateDataDict(0.241f, 0.048f), null) },
-                { ("scenario2", "query4"), new TableResult(CreateDataDict(0, 0), null, true) },
+                { ("scenario2", "query4"), new TableResult(CreateDataDict(0, 0), null, true) }
             };
 
             var tableData = new TableData(columnRowData);
@@ -50,17 +46,17 @@ namespace test_auto_db_perf
         [Test]
         public void CorrectOutputIsGiven_WithBiMode()
         {
-            var columnRowData = new Dictionary<(string, string), TableResult>()
+            var columnRowData = new Dictionary<(string, string), TableResult>
             {
                 {
                     ("scenario1", "query1"),
                     new TableResult(CreateDataDict(0.244f, 0.049f),
-                        new Dictionary<Data, string>() { { Data.BI_MODE, "FULL" } })
+                        new Dictionary<Data, string> { { Data.BI_MODE, "FULL" } })
                 },
                 {
                     ("scenario2", "query2"),
                     new TableResult(CreateDataDict(0.208f, 0.044f),
-                        new Dictionary<Data, string>() { { Data.BI_MODE, "FULL" } })
+                        new Dictionary<Data, string> { { Data.BI_MODE, "FULL" } })
                 }
             };
             var tableData = new TableData(columnRowData);

@@ -20,6 +20,6 @@ namespace AutoDbPerf.Implementations
         PGUSER,
         QUERYPATH,
         TARGET,
-        TIMEOUT,
+        TIMEOUT
     }
 }

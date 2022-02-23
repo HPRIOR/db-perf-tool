@@ -83,7 +83,7 @@ namespace AutoDbPerf.Implementations.BigQuery
                     var bytesProcessed = job.Statistics?.Query?.TotalBytesProcessed / 1073741824d ?? 0;
                     var biEngineMode = job.Statistics?.Query?.BiEngineStatistics?.BiEngineMode ?? "NONE";
                     var bytesBilled = job.Statistics?.Query?.TotalBytesBilled ?? 0;
-                    var queryTime = (job.Statistics?.EndTime - job.Statistics?.StartTime) ?? 0;
+                    var queryTime = job.Statistics?.EndTime - job.Statistics?.StartTime ?? 0;
                     return new BqCommandResult("", queryTime, jobId, (float)bytesProcessed, biEngineMode,
                         bytesBilled);
                 }

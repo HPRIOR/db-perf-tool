@@ -13,7 +13,7 @@ namespace test_auto_db_perf
             var sut = path.GetScenarioFromPath();
             Assert.That(sut, Is.EqualTo("ptv_europe"));
         }
-        
+
         [Test]
         public void GetQueryNameFromPath_WithGetQueryName()
         {
@@ -21,6 +21,5 @@ namespace test_auto_db_perf
             var sut = path.GetQueryNameFromPath();
             Assert.That(sut, Is.EqualTo("brand-leaderboard"));
         }
-        
     }
 }

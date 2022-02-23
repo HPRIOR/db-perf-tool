@@ -1,24 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using AutoDbPerf.Records;
 
 namespace AutoDbPerf.Utils
 {
     public static class EnumerableUtils
     {
+        // IEnumerable<string>
+        public static string AggregateToString(this IEnumerable<string> strings, string separator = "")
+        {
+            var sb = new StringBuilder();
+            foreach (var (i, str) in strings.Enumerate())
+            {
+                sb.Append(str);
+                if (i < strings.Count() - 1) sb.Append(separator);
+            }
+
+            return sb.ToString();
+        }
+
         private static string FlattenStringBase(this IEnumerable<string> strings, string separator) =>
-            strings.Aggregate((a, b) => a + separator + b);
+            strings.AggregateToString(separator);
 
-        public static string FlattenToParagraph(this IEnumerable<string> strings)
-        {
-            return FlattenStringBase(strings, "\n");
-        }
+        public static string FlattenToParagraph(this IEnumerable<string> strings) => FlattenStringBase(strings, "\n");
 
-        public static string FlattenToCommaList(this IEnumerable<string> strings)
-        {
-            return FlattenStringBase(strings, ",");
-        }
+        public static string FlattenToCommaList(this IEnumerable<string> strings) => FlattenStringBase(strings, ",");
 
         public static float GetFirstNumberFromLineWith(this IEnumerable<string> strings, string identifier)
         {
@@ -48,8 +56,14 @@ namespace AutoDbPerf.Utils
             }
         }
 
+
+        // IEnumerable<T>
         public static IEnumerable<T> AllButFirst<T>(this IEnumerable<T> ts) => ts.ToArray()[1..];
 
+        public static IEnumerable<(int, T)> Enumerate<T>(this IEnumerable<T> ts) =>
+            Enumerable.Range(0, ts.Count()).Zip(ts);
+
+        // IEnumerable<QueryResult>
         public static IEnumerable<QueryResult> AllAfterFirstSuccessful(this IEnumerable<QueryResult> qrs)
         {
             var qrsList = qrs.ToList();
@@ -70,6 +84,7 @@ namespace AutoDbPerf.Utils
             }
         }
 
+        // IEnumerable<float>
         public static float StdDev(this IEnumerable<float> xs)
         {
             var xsList = xs.ToList();

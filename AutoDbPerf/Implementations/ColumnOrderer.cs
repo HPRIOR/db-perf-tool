@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml.Schema;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
 using AutoDbPerf.Utils;

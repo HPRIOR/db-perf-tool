@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using AutoDbPerf.Interfaces;
 using AutoDbPerf.Records;
 using AutoDbPerf.Utils;
