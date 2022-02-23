@@ -18,8 +18,12 @@ namespace AutoDbPerf.Implementations.Postgres
 
         public InterpretedCommand InterpretCommandResult(CommandResult cmdResult)
         {
-            if (cmdResult.Stderr.Any())
+            var stdErrPresent = cmdResult.Stderr.Any();
+            var noStdErrOrOut = !cmdResult.Stdout.Any() && !stdErrPresent;
+            if (stdErrPresent)
                 return new InterpretedCommand(true, ErrorMessage: cmdResult.Stderr.FlattenToParagraph());
+            if (noStdErrOrOut)
+                return new InterpretedCommand(true, ErrorMessage: "Could not find correct information in stdout");
 
             var planningTime = cmdResult.Stdout.GetFirstNumberFromLineWith(PlanningIdentifier);
             var executionTime = cmdResult.Stdout.GetFirstNumberFromLineWith(ExecutionIdentifier);
