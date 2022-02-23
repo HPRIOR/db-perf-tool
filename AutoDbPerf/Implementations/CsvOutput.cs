@@ -35,21 +35,20 @@ namespace AutoDbPerf.Implementations
 
             var sb = new StringBuilder();
             var scenarioColumnsRow = "scenarios," +
-                                     tableData.ScenarioColumns.Aggregate((a, b) =>
-                                         a + ",".MultiplyBy(numberOfDataPoints) + b) + "\n";
+                                     tableData.ScenarioColumns.AggregateToString(",".MultiplyBy(numberOfDataPoints)) +
+                                     "\n";
             sb.Append(scenarioColumnsRow);
 
 
             var orderedDataColumnsRow =
-                $",{orderedDataColumns.Aggregate((a, b) => $"{a},{b}").MultiplyBy(numberOfScenarios, ",")}\n"; // multiplied by number of scenarios
+                $",{orderedDataColumns.AggregateToString(",").MultiplyBy(numberOfScenarios, ",")}\n"; // multiplied by number of scenarios
             sb.Append(orderedDataColumnsRow);
 
             var rows = tableData.Rows.Zip(GetDataFrom(tableData, numberOfDataPoints))
                 .Select(x => (rowId: x.First, rowData: x.Second))
-                .Select(row => $"{row.rowId},{row.rowData.Aggregate((a, b) => a + "," + b)}\n")
+                .Select(row => $"{row.rowId},{row.rowData.AggregateToString(",")}\n")
                 .OrderBy(x => x)
-                .Aggregate((a, b) => $"{a}{b}");
-
+                .AggregateToString();
 
             sb.Append(rows);
 
@@ -82,7 +81,7 @@ namespace AutoDbPerf.Implementations
                     tr.NumericData.ContainsKey(d)
                         ? tr.NumericData[d].ToString(CultureInfo.InvariantCulture)
                         : tr.StringData[d])
-                .Aggregate((a, b) => $"{a},{b}");
+                .AggregateToString(",");
         }
     }
 }

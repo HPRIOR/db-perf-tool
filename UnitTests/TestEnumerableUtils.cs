@@ -11,6 +11,30 @@ namespace test_auto_db_perf
     public class TestEnumerableUtils
     {
         [Test]
+        public void AggregateStrings_WillAggregateStringsWithoutSeparator()
+        {
+            var input = new List<string>()
+            {
+                "A", "B", "C", "D"
+            };
+
+            var expected = "ABCD";
+            Assert.That(input.AggregateToString(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void AggregateStrings_WillAggregateStringsWithSeparator()
+        {
+            var input = new List<string>()
+            {
+                "A", "B", "C", "D"
+            };
+
+            var expected = "A-B-C-D";
+            Assert.That(input.AggregateToString("-"), Is.EqualTo(expected));
+        }
+
+        [Test]
         public void FlattenToParagraph_WillWorkOnSingleItemList()
         {
             var input = new List<string>()
@@ -217,6 +241,41 @@ namespace test_auto_db_perf
         {
             var sut = new List<float> { 0 }.StdDev();
             Assert.That(sut, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Enumerate_WillEnumerate_MultipleItems()
+        {
+            var input = new List<string> { "1", "2", "3", "4" };
+            var expected = new List<(int, string)>
+            {
+                (0, "1"),
+                (1, "2"),
+                (2, "3"),
+                (3, "4"),
+            };
+            Assert.That(input.Enumerate(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void Enumerate_WillEnumerate_SingleItem()
+        {
+            var input = new List<string> { "1" };
+            var expected = new List<(int, string)>
+            {
+                (0, "1"),
+            };
+            Assert.That(input.Enumerate(), Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void Enumerate_WillEnumerate_NoItems()
+        {
+            var input = new List<string>();
+            var expected = new List<(int, string)>
+            {
+            };
+            Assert.That(input.Enumerate(), Is.EquivalentTo(expected));
         }
     }
 }
